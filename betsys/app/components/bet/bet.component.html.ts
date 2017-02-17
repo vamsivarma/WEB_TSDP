@@ -1061,8 +1061,8 @@ export const htmlTemplate = `
         [style.fontSize.px] = "chartStyle[0].size"
         [style.fontFamily] = "chartStyle[0].font"
         [style.fontWeight] = "chartStyle[0].style"
+        innerHTML="{{chartInfo1[0].bodyText}}"
       >
-      {{chartInfo1[0].bodyText}}
     </div>
     <img class="chart-img" src="{{'/static/public/images/' + chartInfo1[0].chartURL}}">
   </div>
@@ -1125,8 +1125,8 @@ export const htmlTemplate = `
           [style.fontSize.px] = "chartStyle[0].size"
           [style.fontFamily] = "chartStyle[0].font"
           [style.fontWeight] = "chartStyle[0].style"
+          innerHTML="{{chartInfo2[0].perText}}"
         >
-        {{chartInfo2[0].perText}}
       </div>
       <img class="chart-img" src="{{'/static/public/images/' + chartInfo2[0].perChartURL}}">
     </div>
@@ -1137,8 +1137,8 @@ export const htmlTemplate = `
         [style.fontSize.px] = "chartStyle[0].size"
         [style.fontFamily] = "chartStyle[0].font"
         [style.fontWeight] = "chartStyle[0].style"
+        innerHTML="{{chartInfo2[0].rankText}}"
       >
-        {{chartInfo2[0].rankText}}
       </div>
       <img class="chart-img" src="{{'/static/public/images/' + chartInfo2[0].rankChartURL}}">
     </div>
@@ -1146,11 +1146,9 @@ export const htmlTemplate = `
 
   <div class="chart-pane-body" *ngIf="tabID == 1">
     <div class="chart-pane-box">
-      <div class="chart-pane-body-text" style="padding-top: 0px;">
-        {{chartInfo2[0].perText}}
+      <div class="chart-pane-body-text" style="padding-top: 0px;" innerHTML="{{chartInfo2[0].perText}}">
       </div>
-      <div class="chart-pane-body-text">
-        {{chartInfo2[0].rankText}}
+      <div class="chart-pane-body-text" innerHTML="{{chartInfo2[0].rankText}}">
       </div>
       <div class="chart-img"
           innerHTML="{{chartInfo2[0].signals}}"
