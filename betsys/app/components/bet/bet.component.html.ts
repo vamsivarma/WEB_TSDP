@@ -59,7 +59,7 @@ export const htmlTemplate = `
               {{accountTableColumn1}}
             </td>
             <td
-              style="width:19%; padding:4px;"
+              style="width:19%; min-width: 250px; padding:4px;"
               [style.color]="tableStyles[1].color"
               [style.fontFamily]="tableStyles[1].font"
               [style.fontSize.px]="tableStyles[1].size"
