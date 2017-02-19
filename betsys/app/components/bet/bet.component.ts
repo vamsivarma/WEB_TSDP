@@ -1960,13 +1960,13 @@ export class BetComponent {
             this.curBetPerformance = subType + "";
             this.chartInfo2[0].chartTitle = "Performance Chart : " + this.curBetPerformance;
             this.isChartBox2 = true;
-            this.onTabItem(2);
+            this.onTabItem(1);
         } else {                        // For Conditions value chart..
             var condCell = this.condCells[type - 4][subType];
             this.curBetPerformance = this.componentDict[condCell.condID].webText;
             this.chartInfo2[0].chartTitle = "Performance Chart : " + this.curBetPerformance;
             this.isChartBox2 = true;
-            this.onTabItem(2);
+            this.onTabItem(1);
         }
     }
 

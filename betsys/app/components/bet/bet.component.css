@@ -557,17 +557,17 @@ body {
 	width: 25px;
 	padding-left: 5px;
 	padding-top: 1px;
-	border: 1px solid #2283c7;
+	/*border: 1px solid #2283c7;
 	border-radius: 6px;
-	color: #2283c7;
+	color: #2283c7;*/
 	float: right;
 	margin-top: 5px;
 	margin-right: 10px;
 }
 
 .chart-close-btn:active {
-	border: 2px solid #7b9db5;
-	color: #7b9db5;
+	/*border: 2px solid #7b9db5;
+	color: #7b9db5;*/
 }
 
 .chart-close-text {

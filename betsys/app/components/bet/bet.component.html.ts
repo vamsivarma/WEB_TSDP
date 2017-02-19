@@ -1045,11 +1045,12 @@ export const htmlTemplate = `
               class="chart-icon" alt="{{chartInfo1[0].chipText}}">
     </div>
     <!--chart close button-->
-    <div class="chart-close-btn" (click)="isChartBox1 = false;">
-      X
+    <div class="chart-close-btn" (click)="isChartBox1 = false;">      
       <!--<span class="chart-close-text">{{chartInfo1[0].chipText}}</span>
       <img src="{{'static/public/images/' + chartInfo1[0].chipImg}}"
               class="chart-icon" alt="{{chartInfo1[0].chipText}}">-->
+      <img src="static/public/images/button_close.png"
+                  class="chart-button-img">
     </div>
     <!--chart title-->
     <div class="chart-title-text">{{chartInfo1[0].chartTitle}}</div>
@@ -1082,7 +1083,8 @@ export const htmlTemplate = `
     <div class="chart-pane-header-top">
       <!--chart close button-->
       <div class="chart-close-btn" (click)="isChartBox2 = false;">
-        X
+        <img src="static/public/images/button_close.png"
+                  class="chart-button-img" alt="Performance Chart">
       </div>
       <!--chart title-->
       <div class="chart-title-text">{{chartInfo2[0].chartTitle}}</div>
