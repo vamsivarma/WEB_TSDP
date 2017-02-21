@@ -255,7 +255,7 @@ export class BetComponent {
     isChartBox1 = false;
     isChartBox2 = false;
     chartInfo1 = [{
-        id:1, top: 300, left: 340,
+        id:1, top: 300, left: 340, marginLeft: 100,
         chipText:"50K", chipImg:"chip_maroon.png",
         chartTitle:"Account Performance Chart",
         chartURL:"2017-01-06_v4mini_RiskOff.png",
@@ -362,6 +362,8 @@ export class BetComponent {
                     break;
             }
         }
+		
+		this.adjustChartPanePosition();
     }
 
     ngAfterViewInit() {
@@ -1942,11 +1944,20 @@ export class BetComponent {
         console.log("[Bet.Component] Performance Chart Data : ", this.chartData);
     }
 
+	adjustChartPanePosition() {
+        var containerW = window.innerWidth;
+        var marginLeft = (containerW - 720)/2;
+
+        this.chartInfo1[0].marginLeft  = marginLeft;
+    }
+
     performanceChart(type, subType) {
         this.isChartBox1 = false;
         this.isChartBox2 = false;
 
         console.log("[Bet.Component] Table Type, SubType -> ", type, subType);
+		
+		this.adjustChartPanePosition();		
 
         if(type == 1) {                 // For Unrealized PNL value chart..
         } else if(type == 2) {          // For Account value chart..
