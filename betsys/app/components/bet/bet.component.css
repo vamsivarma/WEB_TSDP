@@ -3,7 +3,7 @@
 /* --------------- for drag and drop --------------- */
 body {
 	background: #F1F1F1;
-	min-width: 920px;
+	min-width: 768px;
 }
 
 
@@ -57,9 +57,9 @@ body {
 	padding: 5px;
 	padding-top: 10px;
 	height: 96%;
-	width: 98%;
+	width: 100%;
 	min-height: 1350px;
-	min-width: 920px;
+	min-width: 768px;
 }
 
 .container .bet-info-pane {
@@ -498,13 +498,13 @@ body {
 /*---------------- chart dialog -------------------*/
 .chart-pane {
 	position: absolute;
-	top: 40px;
-	left: 50px;
-	width: 720px;
-	height: 650px;
-	border-radius: 10px 10px 0 0;
-	box-shadow: 1px 0 6px 0 black;
-	background: lightsteelblue;
+	top: 80px;
+    max-width: 720px;
+    height: 650px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 1px 0 6px 0 #000;
+    background: #b0c4de;
+    z-index: 1000;
 }
 
 .chart-pane-header {

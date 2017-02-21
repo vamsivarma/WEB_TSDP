@@ -32,7 +32,7 @@ export const htmlTemplate = `
         <thead>
           <tr #bet_info_table_header_tr class="info-table-header">
             <td 
-              style="width:21%; padding:4px;"
+              style="width:18%; padding:4px;"
               [style.color]="tableStyles[1].color"
               [style.fontFamily]="tableStyles[1].font"
               [style.fontSize.px]="tableStyles[1].size"
@@ -50,7 +50,7 @@ export const htmlTemplate = `
               Order Type
             </td>
             <td
-              style="width:21%; padding:4px;"
+              style="width:21%; min-width: 210px; padding:4px;"
               [style.color]="tableStyles[1].color"
               [style.fontFamily]="tableStyles[1].font"
               [style.fontSize.px]="tableStyles[1].size"
@@ -1032,10 +1032,10 @@ export const htmlTemplate = `
 
 
 <!--Chart dialog of Account Value-->
-<div class="chart-pane"
-    *ngIf="isChartBox1"
+<div class="chart-pane" 
+    *ngIf="isChartBox1" 
+    [style.marginLeft.px] = "chartInfo1[0].marginLeft"
     [style.top]="chartInfo1[0].top + 'px'"
-    [style.left]="chartInfo1[0].left + 'px'"
   >
   <div class="chart-pane-header">
     <!--chart icon of chip image-->
@@ -1075,8 +1075,8 @@ export const htmlTemplate = `
 <div class="chart-pane"
     *ngIf="isChartBox2"
     style="height: 700px;"
+    [style.marginLeft.px] = "chartInfo1[0].marginLeft"
     [style.top]="chartInfo2[0].top + 'px'"
-    [style.left]="chartInfo2[0].left + 'px'"
   >
 
   <div class="chart-pane-header" style="height: 90px;">
