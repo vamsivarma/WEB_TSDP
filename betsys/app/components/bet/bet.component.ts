@@ -254,6 +254,10 @@ export class BetComponent {
     // For chart dialog..
     isChartBox1 = false;
     isChartBox2 = false;
+
+    isChartBox3 = false;
+    isChartBox4 = false;
+
     chartInfo1 = [{
         id:1, top: 300, left: 340, marginLeft: 0,
         chipText:"50K", chipImg:"chip_maroon.png",
@@ -272,9 +276,46 @@ export class BetComponent {
         signals:"",
     }];
 
+    chartInfo3 = {
+        id:3, top:400, left: 340,
+        tabID: 0,
+        subType: 0,
+        chartTitle:"",
+        tabsList: [],
+        tabBody: {
+            'text': '',
+            'html': ''
+        },
+        tabKeys: ['v4micro', 'v4mini', 'v4futures'],
+        tabIDAssoc: [{
+            'text': 'status_text',
+            'html': 'status',
+            'isImage': false 
+        }, {
+            'text': 'pnl_text',
+            'html': 'pnl',
+            'isImage': false 
+        }, {
+            'text': 'slippage_text',
+            'html': 'slippage',
+            'isImage': true 
+        }],
+        chartData: {}
+    };
+
+    chartInfo4 = {
+        id:4, top:400, left: 340,
+        tabID: 0,
+        chartTitle:"Immediate Orders Timetable",
+        tabBody: {},
+        tabKeys: ['info', 'v4futures', 'v4mini', 'v4micro'],
+        chartData: {}
+    };    
+
+
     chartStyle = [
-        {id:0, relative:"text_performance",         color:"#111111", size:"14", style:"bold", font:"Book antigua"},
-        {id:1, relative:"text_performance_account", color:"#111111", size:"14", style:"bold", font:"Book antigua"},
+        {id:0, relative:"text_performance", color:"#111111", size:"14", style:"bold", font:"Book antigua"},
+        {id:1, relative:"text_performance_account", color:"#111111", size:"14", style:"bold", font:"Book antigua"}
     ]
 
     tabID = 1;
@@ -306,6 +347,11 @@ export class BetComponent {
         this.getPreviousBettingInfo();
         this.getMetaDataInfo();
         this.getAccountDataInfo();
+
+        //Get data to display Immediate Orders Dialogue
+        this.getTimeTableInfo();
+
+        this.getUnrealizedPNLDataInfo();
 
         // // Testing..
         // this.parseBetInfo("");
@@ -1311,6 +1357,38 @@ export class BetComponent {
         });
     }
 
+    getTimeTableInfo() {
+        var body =   this.baseURL + '/gettimetable';
+
+        console.log("[Bet.Component] Previous Time Table HTTP : ", body);
+
+        return this.http.get(body).subscribe(response => {
+            var jsonData = response.json() || {};
+            console.log("[Bet.Componenet] GET TIme Table Success : ", jsonData);
+            this.parseTimeTableData(jsonData);
+        }, error => {
+            this.alarmDialog("Error on loading time table data!", "OK");
+            this.test_value2 = "Error Code : " + error;
+            console.log("[Bet.Componenet] GET Time Table Result Error : ", error);
+        });
+    }
+
+    getUnrealizedPNLDataInfo() {
+        var body =   this.baseURL + '/getstatus';
+
+        console.log("[Bet.Component] Previous Unrealized PNL HTTP : ", body);
+
+        return this.http.get(body).subscribe(response => {
+            var jsonData = response.json() || {};
+            console.log("[Bet.Componenet] GET Unrealized PNL Success : ", jsonData);
+            this.parseUnrealizedPNLData(jsonData);
+        }, error => {
+            this.alarmDialog("Error on loading Unrealized PNL data!", "OK");
+            this.test_value2 = "Error Code : " + error;
+            console.log("[Bet.Componenet] GET Unrealized PNL Result Error : ", error);
+        });
+    }
+
     parseBetInfo(jsData) {
         // // For testing..
         // // For previous data loading..
@@ -1718,6 +1796,34 @@ export class BetComponent {
         }
     }
 
+    parseTimeTableData(rowData) { 
+
+        if(rowData) {
+            this.chartInfo4.chartData = rowData;    
+        }
+    }
+
+    parseUnrealizedPNLData(rowData) {
+
+        if(rowData) {
+            this.chartInfo3.tabsList = this.returnTabsListObject(rowData[this.chartInfo3.tabKeys[0]]['tab_list']);
+
+            this.chartInfo3.chartData = rowData;    
+        }        
+    }
+
+    returnTabsListObject(tabList) {
+        var tabsList = [];
+        for(var i=0; i < tabList.length; i++) {
+            var tab = {};
+            tab['id'] = i;
+            tab['name'] = tabList[i];
+            tabsList.push(tab);
+        }
+
+        return tabsList;
+    }
+
     numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -1952,14 +2058,27 @@ export class BetComponent {
     }
 
     performanceChart(type, subType) {
+        
+        //Hiding all the other charts before showing the current selected dialogue
         this.isChartBox1 = false;
         this.isChartBox2 = false;
+        this.isChartBox3 = false;
+        this.isChartBox4 = false;
 
         console.log("[Bet.Component] Table Type, SubType -> ", type, subType);
 		
 		//this.adjustChartPanePosition();		
 
-        if(type == 1) {                 // For Unrealized PNL value chart..
+        if(type == 0) {                 // For Unrealized PNL value chart..
+
+            this.handlePNLTabs(0, subType);
+            this.isChartBox3 = true;
+
+        } else if(type == 1) {                 // For Immediate Orders chart..
+            
+            this.handleImmediateOrderTabs(0);
+            this.isChartBox4 = true;
+        
         } else if(type == 2) {          // For Account value chart..
             this.chartInfo1[0].chipText = this.dragAccounts[subType].text;
             this.chartInfo1[0].chipImg = this.dragAccounts[subType].bg_url;
@@ -1979,6 +2098,44 @@ export class BetComponent {
             this.isChartBox2 = true;
             this.onTabItem(1);
         }
+    }
+
+    handlePNLTabs(tabID, subType) {
+
+        this.chartInfo3.tabID = tabID;
+
+        //Set the icon on top of chart based on the subType selected
+        if(subType !== '') {
+            this.chartInfo3.subType = subType;
+        }
+
+
+        var subTypeKey = this.chartInfo3.tabKeys[this.chartInfo3.subType];
+        var subTypeData = this.chartInfo3.chartData[subTypeKey];
+        var tabKeyAssoc = this.chartInfo3.tabIDAssoc[tabID];
+
+        this.chartInfo3.chartTitle = subTypeData["title_txt"];
+
+        this.chartInfo3.tabBody['text'] = subTypeData[tabKeyAssoc['text']];
+
+        if(tabKeyAssoc['isImage']) {
+            var imageSrc =  "/" + subTypeData[tabKeyAssoc['html']];
+
+            this.chartInfo3.tabBody['html'] = "<img class='chart-img' src='" + imageSrc + "' />";            
+        } else {
+            this.chartInfo3.tabBody['html'] = subTypeData[tabKeyAssoc['html']];
+        }
+    }
+
+    handleImmediateOrderTabs(tabID) { 
+        this.chartInfo4.tabID = tabID;
+
+        var tabKey = this.chartInfo4.tabKeys[tabID];
+        var tabData = this.chartInfo4.chartData[tabKey];
+
+        if(tabData) {
+            this.chartInfo4.tabBody = tabData;
+        } 
     }
 
     onTabItem(itemID) {
