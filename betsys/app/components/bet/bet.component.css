@@ -592,6 +592,7 @@ body {
     background: -moz-linear-gradient( center bottom, rgb(181,210,230) 2%, rgb(177,207,228) 51%, rgb(232,242,255) 87% );
 	box-shadow: 0 -1px 5px 0;
 	cursor: pointer;
+	min-width: 150px;
 }
 
 .chart-pane-tab-on {
@@ -620,6 +621,7 @@ body {
 	text-align: center;
 	overflow-y: scroll;
 	height: 610px;
+	width: 100%;
 }
 
 .chart-pane-body-text {
@@ -675,4 +677,30 @@ table {
 	border-radius: 7px;
 	box-shadow: 1px 1px 8px 0px #2B2B2B;
 	word-wrap: break-word;
+}
+
+.clear-both-common {
+	clear: both;
+}
+
+.left-float-common {
+	float: left;
+}
+
+.right-float-common {
+	float: right;
+}
+
+.immediate-orders-holder {
+	line-height: 40px;
+}
+
+.immediate-orders-text {
+	font-size: 32px;
+	margin-right: 10px;
+	font-weight: bold;
+}
+
+.immediate-orders-chip-button {
+	cursor: pointer;
 }

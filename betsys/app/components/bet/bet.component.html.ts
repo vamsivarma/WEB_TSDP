@@ -128,10 +128,10 @@ export const htmlTemplate = `
                 <img src="{{'static/public/images/' + chipStyles[idx].img}}"
                      class="chip-img" alt="{{account.text}}">
               </div>
-              <!--<div class="chip-button" (click)="performanceChart(1, idx)">
+              <div class="chip-button" (click)="performanceChart(0, idx)">
                 <img src="static/public/images/performance_button.png"
                      class="chip-img" alt="{{account.text}}">
-              </div>-->
+              </div>
               <div class="gradient">
                 <div class="chip-text" style.color="{{account.column1Clr}}">{{account.column1}}</div>
               </div>
@@ -217,6 +217,12 @@ export const htmlTemplate = `
 
         <!--control pane-->
         <div class="table-control-pane">
+          <div class="immediate-orders-holder clear-both-common">
+              <div class="immediate-orders-text left-float-common">Immediate Orders</div>
+              <div class="immediate-orders-chip-button left-float-common" (click)="performanceChart(1, idx)">
+                  <img class="chip-img" src="static/public/images/performance_button.png" />
+              </div>
+          </div>
           <div #nextTriggerTimePane 
             [style.color] = "timeStyles[1].color"
             [style.fontSize.px] = "timeStyles[1].size"
@@ -1102,7 +1108,7 @@ export const htmlTemplate = `
         </div>
         <div 
           class="chart-pane-tab"
-          *ngFor="let item of dragAccounts; let idx=index;"
+          *ngFor="let item of dragAccounts; let idx = index;" 
           [ngClass]="{'chart-pane-tab-on': tabID === idx + 2}"
           (click)="onTabItem(idx + 2)"
         >
@@ -1157,6 +1163,147 @@ export const htmlTemplate = `
           style="padding: 10px;"
         >
       </div>
+    </div>
+  </div>
+</div>  
+
+ <!-- Chart dialogue of pnl -->
+<div class="chart-pane"
+    *ngIf="isChartBox3"
+    style="height: 700px;"
+    [style.marginLeft.px] = "chartInfo1[0].marginLeft"
+    [style.top]="chartInfo2[0].top + 'px'"
+  >
+
+  <div class="chart-pane-header" style="height: 90px;">
+    <div class="chart-aicon left-float-common">
+          <span class="chart-tab-icon-text">{{dragAccounts[chartInfo3.subType].text}}</span>
+          <img 
+            src="{{'static/public/images/' + dragAccounts[chartInfo3.subType].bg_url}}"
+            class="chart-tab-icon"
+          />
+    </div>
+    <div class="chart-pane-header-top">
+      <!--chart close button-->
+      <div class="chart-close-btn" (click)="isChartBox3 = false;">
+        <img src="static/public/images/button_close.png"
+                  class="chart-button-img" alt="PNL Chart">
+      </div>
+      <!--chart title-->
+      <div class="chart-title-text">{{chartInfo3.chartTitle}}</div>
+    </div>
+
+    <div class="chart-pane-header-bottom">
+      <!--chart tab of chip image-->
+      <div class="chart-pane-tab-bar">
+        <div 
+          class="chart-pane-tab"
+          *ngFor="let item of chartInfo3.tabsList; let idx=index;"
+          [ngClass]="{'chart-pane-tab-on': chartInfo3.tabID === idx}"
+          (click)="handlePNLTabs(idx, '')"
+        >
+          {{chartInfo3.tabsList[idx].name}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="chart-pane-body">
+    <div class="chart-pane-box">
+      <div class="chart-pane-body-text"
+          [style.color] = "chartStyle[0].color"
+          [style.background-color] = "chartStyle[0].bgColor"
+          [style.fontSize.px] = "chartStyle[0].size"
+          [style.fontFamily] = "chartStyle[0].font"
+          [style.fontWeight] = "chartStyle[0].style"
+          innerHTML="{{chartInfo3.tabBody.text}}"
+        >
+      </div>
+    </div>
+    <div class="chart-pane-box">
+      <div class="chart-pane-body-text"
+          [style.color] = "chartStyle[0].color"
+          [style.background-color] = "chartStyle[0].bgColor"
+          [style.fontSize.px] = "chartStyle[0].size"
+          [style.fontFamily] = "chartStyle[0].font"
+          [style.fontWeight] = "chartStyle[0].style"
+          innerHTML="{{chartInfo3.tabBody.html}}"
+        >
+      </div>
+    </div>
+  </div>
+</div>  
+
+  <!-- Chart dialogue of immediate orders -->
+<div class="chart-pane"
+    *ngIf="isChartBox4"
+    style="height: 700px;"
+    [style.marginLeft.px] = "chartInfo1[0].marginLeft"
+    [style.top]="chartInfo2[0].top + 'px'"
+  >
+
+  <div class="chart-pane-header" style="height: 90px;">
+    <div class="chart-pane-header-top">
+      <!--chart close button-->
+      <div class="chart-close-btn" (click)="isChartBox4 = false;">
+        <img src="static/public/images/button_close.png"
+                  class="chart-button-img" alt="Immediate Orders Chart">
+      </div>
+      <!--chart title-->
+      <div class="chart-title-text">{{chartInfo4.chartTitle}}</div>
+    </div>
+
+    <div class="chart-pane-header-bottom">
+      <!--chart tab of chip image-->
+      <div class="chart-pane-tab-bar">
+        <div 
+          class="chart-pane-tab" 
+          [ngClass]="{'chart-pane-tab-on': chartInfo4.tabID === 0}"
+          (click)="handleImmediateOrderTabs(0)"
+        >
+          Info
+        </div>
+        <div 
+          class="chart-pane-tab"
+          *ngFor="let item of dragAccounts; let idx=index;"
+          [ngClass]="{'chart-pane-tab-on': chartInfo4.tabID === idx + 1}"
+          (click)="handleImmediateOrderTabs(idx + 1)"
+        >
+          <div class="chart-aicon">
+            <span class="chart-tab-icon-text">{{dragAccounts[2-idx].text}}</span>
+            <img 
+              src="{{'static/public/images/' + dragAccounts[2-idx].bg_url}}"
+              class="chart-tab-icon"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-pane-body">
+    <div class="chart-pane-box">
+        <div class="chart-pane-body-text"
+            [style.color] = "chartStyle[0].color"
+            [style.background-color] = "chartStyle[0].bgColor"
+            [style.fontSize.px] = "chartStyle[0].size"
+            [style.fontFamily] = "chartStyle[0].font"
+            [style.fontWeight] = "chartStyle[0].style"
+            innerHTML="{{chartInfo4.tabBody.text}}"
+          >
+        </div>
+    </div>
+    <div class="chart-pane-box">
+      <div class="chart-pane-body-text"
+          [style.color] = "chartStyle[0].color"
+          [style.background-color] = "chartStyle[0].bgColor"
+          [style.fontSize.px] = "chartStyle[0].size"
+          [style.fontFamily] = "chartStyle[0].font"
+          [style.fontWeight] = "chartStyle[0].style"
+          innerHTML="{{chartInfo4.tabBody.html}}"
+        >
+        </div>
     </div>
   </div>
 </div>
