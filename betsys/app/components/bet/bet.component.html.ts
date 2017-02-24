@@ -775,15 +775,21 @@ export const htmlTemplate = `
             class="bet-recent-pane" 
             *ngIf="bShowRecentData"
           >
-          <div style="padding: 8px;">History</div>
+          <div style="padding: 8px; font-size: 18px;"><b>History</b></div>
           <div style="width: 100%; height: 82%; overflow-y: scroll; padding: 1px; box-shadow: 0 0 6px 1px #444343;">
             <table class="bet-recent-table">
               <thead>
                 <tr #bet_recent_table_header_tr class="recent-table-header">
-                  <td style="width:2%; padding:4px;">No</td>
-                  <td style="width:15%; padding:4px;">timestamp</td>
+                  <td style="width:15%; padding:4px;">Timestamp</td>
                   <td style="width:10%; padding:4px;">MC Date</td>
-                  <td style="width:73%; padding:4px;">Selection</td>
+                  <template let-header ngFor [ngForOf]="recentDataDynamicHeaders">
+                    <td style="width:{{dynamicColumnWidth}}%; padding:4px;" 
+                        *ngFor="let item of header.items; let idx=index;"
+                        [ngClass]="{'bet-column-highlight': idx === 0}" 
+                      >
+                        {{item}}
+                    </td>
+                  </template>
                 </tr>
               </thead>
 
@@ -793,11 +799,7 @@ export const htmlTemplate = `
                     class="recent-table-row"
                     *ngFor="let data of recentData; let idx = index;"
                     >
-                  <td style="text-align:right">
-                    {{idx + 1}}
-                  </td>
-
-                  <td style="text-align: right;">
+                  <td style="text-align: left;">
                     <div class="recent-text">{{data.timestamp}}</div>
                   </td>
 
@@ -805,9 +807,15 @@ export const htmlTemplate = `
                     <div class="recent-text">{{data.mcdate}}</div>
                   </td>
 
-                  <td style="padding:0;">
-                    <div class="recent-text">{{data.selection}}</div>
-                  </td>
+                  <template let-selection ngFor [ngForOf]="data.selection">
+                    <td style="padding:0;" 
+                      *ngFor="let item of selection.items; let idx=index;"
+                      [ngClass]="{'bet-column-highlight': idx === 0}"  
+                      >
+                      <div class="recent-text">{{item}}</div>
+                    </td>  
+                  </template>
+
                 </tr>
 
               </tbody>
