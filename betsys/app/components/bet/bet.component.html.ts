@@ -1221,16 +1221,9 @@ export const htmlTemplate = `
         >
       </div>
     </div>
-    <div class="chart-pane-box">
-      <div class="chart-pane-body-text"
-          [style.color] = "chartStyle[0].color"
-          [style.background-color] = "chartStyle[0].bgColor"
-          [style.fontSize.px] = "chartStyle[0].size"
-          [style.fontFamily] = "chartStyle[0].font"
-          [style.fontWeight] = "chartStyle[0].style"
+    <div class="chart-img"
           innerHTML="{{chartInfo3.tabBody.html}}"
         >
-      </div>
     </div>
   </div>
 </div>  
@@ -1294,16 +1287,9 @@ export const htmlTemplate = `
           >
         </div>
     </div>
-    <div class="chart-pane-box">
-      <div class="chart-pane-body-text"
-          [style.color] = "chartStyle[0].color"
-          [style.background-color] = "chartStyle[0].bgColor"
-          [style.fontSize.px] = "chartStyle[0].size"
-          [style.fontFamily] = "chartStyle[0].font"
-          [style.fontWeight] = "chartStyle[0].style"
-          innerHTML="{{chartInfo4.tabBody.html}}"
-        >
-        </div>
+    <div class="chart-img"
+        innerHTML="{{chartInfo4.tabBody.html}}"
+      >
     </div>
   </div>
 </div>
