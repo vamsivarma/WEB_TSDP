@@ -1514,14 +1514,28 @@ export class BetComponent {
         var selectionAry = [];
 
         for(var key in selectionObj) {
+            var metaAry = this.getTransformedMetaAry(selectionObj[key]);
             var selectionItem = {
-                "items": [key].concat(selectionObj[key])
+                "items": [key].concat(metaAry)
             }
 
             selectionAry.push(selectionItem);
         }
 
         return selectionAry;
+    }
+
+    getTransformedMetaAry(metaAry) {
+        var orderTypeAssoc = {
+            "True": "Immediate",
+            "False": "MOC"
+        }
+
+        var orderType = orderTypeAssoc[metaAry[metaAry.length - 1]];
+
+        metaAry[metaAry.length - 1] = orderType;
+
+        return metaAry;
     }
 
     generateRecentDataDynamicHeaders(itemLen) {

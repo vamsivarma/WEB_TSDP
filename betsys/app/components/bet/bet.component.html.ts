@@ -780,15 +780,15 @@ export const htmlTemplate = `
             <table class="bet-recent-table">
               <thead>
                 <tr #bet_recent_table_header_tr class="recent-table-header">
-                  <td style="width:15%; padding:4px;">Timestamp</td>
-                  <td style="width:10%; padding:4px;">MC Date</td>
+                  <th style="width:15%; padding:4px;">Timestamp</th>
+                  <th style="width:10%; padding:4px;">MC Date</th>
                   <template let-header ngFor [ngForOf]="recentDataDynamicHeaders">
-                    <td style="width:{{dynamicColumnWidth}}%; padding:4px;" 
+                    <th style="width:{{dynamicColumnWidth}}%; padding:4px;" 
                         *ngFor="let item of header.items; let idx=index;"
                         [ngClass]="{'bet-column-highlight': idx === 0}" 
                       >
                         {{item}}
-                    </td>
+                    </th>
                   </template>
                 </tr>
               </thead>
