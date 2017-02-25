@@ -469,9 +469,19 @@ body {
 	background: white;
 }
 
+.bet-recent-pane .bet-recent-table th {
+	text-align: center;
+    border: 2px solid grey;
+}
+
 .bet-recent-pane .bet-recent-table td {
-	border: 1px dashed grey;
-	height: 30px;
+	border: 1px solid grey;
+    height: 30px;
+    text-align: center;
+}
+
+.bet-column-highlight {
+	background-color: skyblue;
 }
 
 .bet-recent-pane .bet-recent-table .recent-table-header {

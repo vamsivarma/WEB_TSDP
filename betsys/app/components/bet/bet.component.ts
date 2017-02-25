@@ -242,6 +242,9 @@ export class BetComponent {
     // For recent and previous..
     recentData = [];
     bShowRecentData = false;
+    recentDataDynamicHeaders = [];
+    dynamicColumnWidth = 6;
+
 
     // For test..
     test_value1 = "";
@@ -1466,10 +1469,17 @@ export class BetComponent {
             var oneData : any = {
                 'timestamp' : this.timeFromTimeStamp(tempData[i].timestamp) || 0,
                 'mcdate' : tempData[i].mcdate || "",
-                'selection' : JSON.stringify(tempData[i].selection)
+                'selection' : this.getParsedSelectionData(JSON.parse(tempData[i].selection))
             }
+
             this.recentData.push(oneData);
         }
+
+        var selectionItemLen = this.recentData[0].selection.length;
+
+        this.recentDataDynamicHeaders = this.generateRecentDataDynamicHeaders(selectionItemLen);
+        
+        this.dynamicColumnWidth = 60/(selectionItemLen * 3);
         this.bShowRecentData = true;
 
         // // For Parsing JSON..
@@ -1498,6 +1508,48 @@ export class BetComponent {
         var performanceCharts = previous['performance'];
         console.log("[Bet.Component] Performance Style Parsed Data:", performanceCharts);
         this.getPerformanceData(performanceCharts);
+    }
+
+    getParsedSelectionData(selectionObj) {
+        var selectionAry = [];
+
+        for(var key in selectionObj) {
+            var metaAry = this.getTransformedMetaAry(selectionObj[key]);
+            var selectionItem = {
+                "items": [key].concat(metaAry)
+            }
+
+            selectionAry.push(selectionItem);
+        }
+
+        return selectionAry;
+    }
+
+    getTransformedMetaAry(metaAry) {
+        var orderTypeAssoc = {
+            "True": "Immediate",
+            "False": "MOC"
+        }
+
+        var orderType = orderTypeAssoc[metaAry[metaAry.length - 1]];
+
+        metaAry[metaAry.length - 1] = orderType;
+
+        return metaAry;
+    }
+
+    generateRecentDataDynamicHeaders(itemLen) {
+        var dynamicHeadersAry = [];
+
+        for(var i=0; i < itemLen; i++) {
+            var dynamicHeaderItem = {
+                    "items": ["Account", "Bet", "Ordertype"]
+            }
+
+            dynamicHeadersAry.push(dynamicHeaderItem);
+        }
+
+        return dynamicHeadersAry;
     }
 
     layoutBet(item, dragItem, mcdate) {
