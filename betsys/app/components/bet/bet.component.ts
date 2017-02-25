@@ -421,10 +421,17 @@ export class BetComponent {
         this.onResize(null, 0);
     }
 
-    onDropSuccess($event, idCol, idRow) {
-        this.onResize(null, 0);
+    hideChartDialogues() {
         this.isChartBox1 = false;
         this.isChartBox2 = false;
+        this.isChartBox3 = false;
+        this.isChartBox4 = false;
+    }
+
+    onDropSuccess($event, idCol, idRow) {
+        this.onResize(null, 0);
+        
+        this.hideChartDialogues();
         
         // Get drag object..
         var dragData = $event.dragData;
@@ -501,11 +508,13 @@ export class BetComponent {
                 }
                 var antiObj = this.componentDict[antiPaneId];
                 console.log("[Bet.Component] Pane Anit Object to Draw ->", antiObj);
-                if(antiObj.condRelative == -1) {
-                    this.antiOpt = true;
-                } else {
-                    this.antiOpt = false;
-                }
+                //if(antiObj.condRelative == -1) {
+                //    this.antiOpt = true;
+                //} else {
+                //    this.antiOpt = false;
+                //}
+
+                this.antiOpt = true;    
 
                 for(var order = 0; order < 3; order++) {
                     if(paneObj.dragItem[order] == -1) {
@@ -515,7 +524,7 @@ export class BetComponent {
                 }
 
                 dragObj.dragOrder = order;
-                this.voteText = paneObj.text;
+                this.voteText = paneObj.orgText;
                 condID = paneObj.condID;
 
                 if(condID % 2 == 0) {
@@ -633,18 +642,26 @@ export class BetComponent {
         if(idCol == -1) {
             return;
         }
+
         if(idCol < 12) {                            // For bet table region..
             this.betCells[idCol][idRow][account.dragOrder] = -1;
+            //this.betCells[account.prevDragCol][account.prevDragRow][account.prevDragOrder] = this.curDragIdx;
             console.log("[Bet.Component] Order Data After Cancel ->", this.betCells[idCol][idRow]);
         } else {
             var condIdx = idCol - 12;
             this.condCells[condIdx][idRow].dragItem[account.dragOrder] = -1;
+            //this.condCells[account.prevDragCol - 12][account.prevDragRow].dragItem[account.prevDragOrder] = this.curDragIdx;
         }
 
         account.prevDragCol = account.dragCol;
         account.prevDragRow = account.dragRow;
         account.dragCol = -1;
         account.dragRow = -1;
+
+        //account.dragCol = account.prevDragCol;
+        //account.dragRow = account.prevDragRow;
+        //account.dragOrder = account.prevDragOrder; 
+
         account.display = "table-cell";
     }
 
@@ -680,8 +697,7 @@ export class BetComponent {
         this.condCells[0][1].dragItem = [-1, -1, -1];
 
         // Reset for chart dialog..
-        this.isChartBox1 = false;
-        this.isChartBox2 = false;
+        this.hideChartDialogues();
     }
 
 
@@ -1036,8 +1052,7 @@ export class BetComponent {
     /*------------------------- For Database ---------------------------------*/
     onConfirmGET() {
         // Reset for chart dialog..
-        this.isChartBox1 = false;
-        this.isChartBox2 = false;
+        this.hideChartDialogues();
 
         this.structData();
         let header = new Headers({'Content-Type':'application/json'});
@@ -1674,12 +1689,18 @@ export class BetComponent {
         // For living..
         console.log("[Bet.Component] Trigger Data Row Data : ", rowData);
         var jdata = rowData['triggers'];
-        jdata = jdata.replace(/\{u'/g, "\{'");
-        jdata = jdata.replace(/\,u'/g, "\,'");
-        jdata = jdata.replace(/ u'/g, " '");
-        jdata = jdata.replace(/'/g, "\"");
-        console.log("[Bet.Component] Trigger Data Before JSON Data : ", jdata);
-        var json = JSON.parse(jdata);
+        var json = jdata;
+
+        if(typeof jdata === "string") {
+            jdata = jdata.replace(/\{u'/g, "\{'");
+            jdata = jdata.replace(/\,u'/g, "\,'");
+            jdata = jdata.replace(/ u'/g, " '");
+            jdata = jdata.replace(/'/g, "\"");
+
+            console.log("[Bet.Component] Trigger Data Before JSON Data : ", jdata);
+            json = JSON.parse(jdata);
+        } 
+        
         console.log("[Bet.Component] Trigger Data JSON Object : ", json);
 
 
@@ -2112,10 +2133,7 @@ export class BetComponent {
     performanceChart(type, subType) {
         
         //Hiding all the other charts before showing the current selected dialogue
-        this.isChartBox1 = false;
-        this.isChartBox2 = false;
-        this.isChartBox3 = false;
-        this.isChartBox4 = false;
+        this.hideChartDialogues();
 
         console.log("[Bet.Component] Table Type, SubType -> ", type, subType);
 		
