@@ -126,14 +126,14 @@ export class BetComponent {
 
     // For the dialog styles..
     dlgStyles = [
-        {id:0, idc:18, relative:"b_order_ok",       color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:1, idc:19, relative:"b_order_cancel",   color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:2, idc:20, relative:"b_order_active",   color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:3, idc:21, relative:"b_order_inactive", color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:4, idc:22, relative:"b_save_ok",        color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:5, idc:23, relative:"b_save_cancel",    color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:6, idc:24, relative:"d_order_dialog",   color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
-        {id:7, idc:25, relative:"d_save_dialog",    color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:0, idc:19, relative:"b_order_ok",       color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:1, idc:20, relative:"b_order_cancel",   color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:2, idc:21, relative:"b_order_active",   color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:3, idc:22, relative:"b_order_inactive", color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:4, idc:23, relative:"b_save_ok",        color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:5, idc:24, relative:"b_save_cancel",    color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:6, idc:25, relative:"d_order_dialog",   color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
+        {id:7, idc:26, relative:"d_save_dialog",    color:"#111111", size:"14", bgColor:"#FFFFFF", style:"bold", font:"Book antigua", text:"Clear All Bets"},
     ];
 
     // For the styles of table cells..
@@ -1934,7 +1934,7 @@ export class BetComponent {
         }
 
         // For Table formats of text and title..
-        idc = 26;
+        idc = 27;
         for(var idx = 0; idx < this.tableStyles.length; idx++) {
             var key = this.tableStyles[idx]["relative"];
             var style = boxStyles[idc][key];
@@ -1948,7 +1948,7 @@ export class BetComponent {
         }
 
         // For Time formats..
-        idc = 28;
+        idc = 29;
         for(var idx = 0; idx < this.timeStyles.length; idx++) {
             var key = this.timeStyles[idx]["relative"];
             var style = boxStyles[idc][key];
@@ -1962,7 +1962,7 @@ export class BetComponent {
         }
 
         // For Table cell formats..
-        idc = 35;
+        idc = 39;
         for(var idx = 0; idx < this.tableCells.length; idx++) {
             var key = this.tableCells[idx]["id"] + "";
             var style = boxStyles[idc][key];
@@ -1978,7 +1978,7 @@ export class BetComponent {
         }
 
         // For Chip cell formats..
-        idc = 32;
+        idc = 36;
         for(var idx = 0; idx < this.chipStyles.length; idx++) {
             var key = this.chipStyles[idx]["relative"];
             var style = boxStyles[idc][key];
@@ -2006,7 +2006,7 @@ export class BetComponent {
             console.log("[Bet.Component] Cell, Style, Key : ", this.dlgStyles[idx], style, key, idc);
         }
 
-        idc = 30;
+        idc = 31;
         // For chart information dialog formats..
         for(var idx = 0; idx < this.chartStyle.length; idx++) {
             var key = this.chartStyle[idx]["relative"];
