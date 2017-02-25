@@ -460,6 +460,7 @@ body {
 	padding: 5px;
 	border-radius: 4px;
 	background: white;
+	clear: both;
 }
 
 .bet-recent-pane .bet-recent-table {
