@@ -125,8 +125,9 @@ def newboard(request):
     return render(request, 'newboard.html', {})
 
 def getmetadata(request):
-    returnrec = MetaData.objects.order_by('-timestamp').first()
-    returndata = returnrec.dic()
+    #returnrec = MetaData.objects.order_by('-timestamp').first()
+    #returndata = returnrec.dic()
+    returndata=updateMeta()
     print(returndata)
     return HttpResponse(json.dumps(returndata))
 
