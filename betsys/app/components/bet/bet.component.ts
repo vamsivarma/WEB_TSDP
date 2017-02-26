@@ -325,7 +325,7 @@ export class BetComponent {
     curBetPerformance = "";
 
     chartData = {};
-
+    anticomponents = {};
 
 
     /*-------------------------------------------------------------------*/
@@ -524,7 +524,7 @@ export class BetComponent {
                 }
 
                 dragObj.dragOrder = order;
-                this.voteText = paneObj.orgText;
+                this.voteText = this.componentDict[paneObj.condID].webText;
                 condID = paneObj.condID;
 
                 if(condID % 2 == 0) {
@@ -532,7 +532,7 @@ export class BetComponent {
                 } else {
                     antiCondID = condID - 1;
                 }
-                this.antiVoteText = this.componentDict[antiCondID].webText;
+                this.antiVoteText = this.anticomponents[this.componentDict[paneObj.condID].webText];
                 console.log("[Bet.Component] Anti ID : ", antiCondID);
             }
         }
@@ -657,6 +657,11 @@ export class BetComponent {
         account.prevDragRow = account.dragRow;
         account.dragCol = -1;
         account.dragRow = -1;
+        account.nextBet = "Off";
+        account.orderType = "MOC 20170130";
+        account.iNextBet = -1;
+        account.iOrderType = -1;
+        account.dragOrder = -1;
 
         //account.dragCol = account.prevDragCol;
         //account.dragRow = account.prevDragRow;
@@ -1703,7 +1708,7 @@ export class BetComponent {
         
         console.log("[Bet.Component] Trigger Data JSON Object : ", json);
 
-
+        this.anticomponents = rowData['anticomponents'];
 
         // Get all data..
         var jsonArray = [];
