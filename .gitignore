@@ -1,0 +1,3 @@
+node_modules/
+betsys/app/**/*.js
+betsys/dist/

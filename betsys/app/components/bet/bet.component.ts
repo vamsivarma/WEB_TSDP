@@ -472,8 +472,10 @@ export class BetComponent {
             // dragObj.orderType = "Off";
             dragObj.iNextBet = -1;
             // dragObj.iOrderType = -1;
-            this.voteText = "";
+            this.voteText = "Off";
             this.antiVoteText = "";
+            this.antiOpt = false;
+            this.voteType = 0;
         } else {
             dragObj.dragCol = idCol;
             dragObj.dragRow = idRow;
