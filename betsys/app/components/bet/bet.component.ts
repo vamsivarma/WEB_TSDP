@@ -325,6 +325,7 @@ export class BetComponent {
     curBetPerformance = "";
 
     chartData = {};
+    components = {};
     anticomponents = {};
 
 
@@ -472,8 +473,10 @@ export class BetComponent {
             // dragObj.orderType = "Off";
             dragObj.iNextBet = -1;
             // dragObj.iOrderType = -1;
-            this.voteText = "";
+            this.voteText = "Off";
             this.antiVoteText = "";
+            this.antiOpt = false;
+            this.voteType = 0;
         } else {
             dragObj.dragCol = idCol;
             dragObj.dragRow = idRow;
@@ -1312,7 +1315,7 @@ export class BetComponent {
                     objLabel = "c" + (startPT[idx] + item * 2 + 1);
                 }
                 var objDict = {};
-                objDict[objLabel] = obj.text;
+                objDict[objLabel] = this.components[obj.orgText][0];
                 locDict.push(objDict);
                 // console.log("[Bet.Component]1. Label, Text : ", objLabel, obj.text);
 
@@ -1320,7 +1323,7 @@ export class BetComponent {
                     objLabel = "c" + (startPT[idx] + item * 2 + 2);
                     obj = this.condCells[idx + 1][item];
                     var objDict = {};
-                    objDict[objLabel] = obj.text;
+                    objDict[objLabel] = this.components[obj.orgText][0];
                     locDict.push(objDict);
                     // console.log("[Bet.Component]2. Label, Text : ", objLabel, obj.text);
                 }
@@ -1709,6 +1712,7 @@ export class BetComponent {
         console.log("[Bet.Component] Trigger Data JSON Object : ", json);
 
         this.anticomponents = rowData['anticomponents'];
+        this.components = rowData['components'];
 
         // Get all data..
         var jsonArray = [];
@@ -2056,8 +2060,8 @@ export class BetComponent {
         var actValueData = {};
         actValueData['infotext'] = actValueJSON['infotext'];
         actValueData['0'] = actValueJSON['v4futures_filename'];
-        actValueData['1'] = actValueJSON['v4micro_filename'];
-        actValueData['2'] = actValueJSON['v4mini_filename'];
+        actValueData['1'] = actValueJSON['v4mini_filename'];
+        actValueData['2'] = actValueJSON['v4micro_filename'];
         this.chartData['actValue'] = actValueData;
 
         // // Read tabe Value performance data..
@@ -2080,16 +2084,16 @@ export class BetComponent {
             // Data for performance chart..
             tableValueData['perText'] = tableValueJSON['infotext2'];
             tableValueData['0_per_file'] = tableValueJSON['v4futures_filename'];
-            tableValueData['1_per_file'] = tableValueJSON['v4micro_filename'];
-            tableValueData['2_per_file'] = tableValueJSON['v4mini_filename'];
+            tableValueData['1_per_file'] = tableValueJSON['v4mini_filename'];
+            tableValueData['2_per_file'] = tableValueJSON['v4micro_filename'];
 
             // Data for rank chart..
             tableValueData['0_rank_text'] = tableValueJSON['v4futures_rank_text'];
             tableValueData['0_rank_file'] = tableValueJSON['v4futures_rank_filename'];
-            tableValueData['1_rank_text'] = tableValueJSON['v4micro_rank_text'];
-            tableValueData['1_rank_file'] = tableValueJSON['v4micro_rank_filename'];
-            tableValueData['2_rank_text'] = tableValueJSON['v4mini_rank_text'];
-            tableValueData['2_rank_file'] = tableValueJSON['v4mini_rank_filename'];
+            tableValueData['1_rank_text'] = tableValueJSON['v4mini_rank_text'];
+            tableValueData['1_rank_file'] = tableValueJSON['v4mini_rank_filename'];
+            tableValueData['2_rank_text'] = tableValueJSON['v4micro_rank_text'];
+            tableValueData['2_rank_file'] = tableValueJSON['v4micro_rank_filename'];
 
             // Data for info tab..
             tableValueData['date'] = tableValueJSON['date'];
@@ -2107,16 +2111,16 @@ export class BetComponent {
             // Data for performance chart..
             condValueData['perText'] = condValueJSON['infotext2'];
             condValueData['0_per_file'] = condValueJSON['v4futures_filename'];
-            condValueData['1_per_file'] = condValueJSON['v4micro_filename'];
-            condValueData['2_per_file'] = condValueJSON['v4mini_filename'];
+            condValueData['1_per_file'] = condValueJSON['v4mini_filename'];
+            condValueData['2_per_file'] = condValueJSON['v4micro_filename'];
 
             // Data for rank chart..
             condValueData['0_rank_text'] = condValueJSON['v4futures_rank_text'];
             condValueData['0_rank_file'] = condValueJSON['v4futures_rank_filename'];
-            condValueData['1_rank_text'] = condValueJSON['v4micro_rank_text'];
-            condValueData['1_rank_file'] = condValueJSON['v4micro_rank_filename'];
-            condValueData['2_rank_text'] = condValueJSON['v4mini_rank_text'];
-            condValueData['2_rank_file'] = condValueJSON['v4mini_rank_filename'];
+            condValueData['1_rank_text'] = condValueJSON['v4mini_rank_text'];
+            condValueData['1_rank_file'] = condValueJSON['v4mini_rank_filename'];
+            condValueData['2_rank_text'] = condValueJSON['v4micro_rank_text'];
+            condValueData['2_rank_file'] = condValueJSON['v4micro_rank_filename'];
 
             // Data for info tab..
             condValueData['date'] = condValueJSON['date'];

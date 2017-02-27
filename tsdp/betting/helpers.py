@@ -102,6 +102,12 @@ def getComponents():
                     'AntiLowestEquity':['Anti0.5LastSIG'],
                     'Seasonality':['LastSEA'],
                     'Anti-Seasonality':['AntiSEA'],
+                    'LowestEq':['0.5LastSIG'],
+                    'HighestEq':['1LastSIG'],
+                    'Anti-HE':['Anti1LastSIG'],
+                    'Anti-50':['Anti0.75LastSIG'],
+                    'Anti-Sea':['AntiSEA'],
+                    "none": ['None']  
                     }
     return ComponentsDict
 
