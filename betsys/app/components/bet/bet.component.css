@@ -707,11 +707,11 @@ table {
 }
 
 .immediate-orders-text {
-	font-size: 32px;
-	margin-right: 10px;
+	font-size: 32px;	
 	font-weight: bold;
 }
 
 .immediate-orders-chip-button {
 	cursor: pointer;
+	margin-right: 10px;
 }

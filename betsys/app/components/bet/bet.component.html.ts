@@ -218,10 +218,10 @@ export const htmlTemplate = `
         <!--control pane-->
         <div class="table-control-pane">
           <div class="immediate-orders-holder clear-both-common">
-              <div class="immediate-orders-text left-float-common">Immediate Orders</div>
               <div class="immediate-orders-chip-button left-float-common" (click)="performanceChart(1, idx)">
                   <img class="chip-img" src="static/public/images/performance_button.png" />
               </div>
+              <div class="immediate-orders-text left-float-common">Immediate Orders</div>              
           </div>
           <div #nextTriggerTimePane 
             [style.color] = "timeStyles[1].color"
