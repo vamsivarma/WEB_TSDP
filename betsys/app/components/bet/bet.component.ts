@@ -2164,6 +2164,7 @@ export class BetComponent {
             this.chartInfo1[0].chartTitle = "Account Performance Chart";
             this.curBetPerformance = subType + "";
             this.chartInfo1[0].chartURL = this.chartData['actValue'][this.curBetPerformance];
+            this.chartInfo1[0].bodyText = this.chartData['actValue']['infotext'];
             this.isChartBox1 = true;
         } else if(type == 3) {          // For table value chart..
             this.curBetPerformance = subType + "";
