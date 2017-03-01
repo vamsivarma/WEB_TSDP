@@ -1178,8 +1178,6 @@ export class BetComponent {
 
         this.test_value1 = JSON.stringify(this.db_Selection);
         this.test_value2 = JSON.stringify(this.db_v4futures);
-
-        console.log("[Bet.Component] Location Dict:", this.db_componentloc);
     }
 
     // Get dragged down pane information..
@@ -2070,10 +2068,11 @@ export class BetComponent {
         var actValueJSON = performanceCharts['account_value'];
         var actValueData = {};
         actValueData['infotext'] = actValueJSON['infotext'];
-        actValueData['0'] = actValueJSON['v4futures_filename'];
+        actValueData['0'] = actValueJSON['v4micro_filename'];
         actValueData['1'] = actValueJSON['v4mini_filename'];
-        actValueData['2'] = actValueJSON['v4micro_filename'];
+        actValueData['2'] = actValueJSON['v4futures_filename'];
         this.chartData['actValue'] = actValueData;
+
 
         // // Read tabe Value performance data..
         // for(var i = 0; i < 36; i++) {
