@@ -312,8 +312,11 @@ export class BetComponent {
         chartTitle:"Immediate Orders Timetable",
         tabBody: {},
         tabKeys: ['info', 'v4futures', 'v4mini', 'v4micro'],
-        chartData: {}
+        chartData: {},
+        styleIndex: 33,
+        titleText: "Immediate Orders"
     };    
+
 
 
     chartStyle = [
@@ -1056,6 +1059,7 @@ export class BetComponent {
     db_v4mini = {};
     db_v4micro = {};
     db_componentloc = {};
+    boxStylesMeta = [];
 
     /*------------------------- For Database ---------------------------------*/
     onConfirmGET() {
@@ -1175,8 +1179,6 @@ export class BetComponent {
         this.test_value1 = JSON.stringify(this.db_Selection);
         this.test_value2 = JSON.stringify(this.db_v4futures);
 
-        // For db_componentloc..
-        this.db_componentloc = this.curComponentLoc();
         console.log("[Bet.Component] Location Dict:", this.db_componentloc);
     }
 
@@ -1527,6 +1529,11 @@ export class BetComponent {
         var boxStyles = previous['boxstyles'];
         console.log("[Bet.Component] Box Style Parsed Data:", boxStyles);
         this.applyStyle(boxStyles);
+
+        this.boxStylesMeta = boxStyles;
+
+        // For db_componentloc..
+        this.db_componentloc = JSON.parse(previous['componentloc']);
 
         var performanceCharts = previous['performance'];
         console.log("[Bet.Component] Performance Style Parsed Data:", performanceCharts);
@@ -2050,6 +2057,10 @@ export class BetComponent {
 
             idc ++;
         }
+
+        var titleTextMeta = boxStyles[this.chartInfo4['styleIndex']]['text_immediate_orders']
+
+        this.chartInfo4['titleText'] = (titleTextMeta) ? titleTextMeta['text'] : "Immediate Orders";
 
     }
 
