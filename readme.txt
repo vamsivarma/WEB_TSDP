@@ -4,8 +4,9 @@ First install node.js from https://nodejs.org/en/
 
 https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md
 
-Then install gulp
+Then install gulp.
 
+Install python environment from https://www.continuum.io/downloads
 
 - go to betsys folder
 
