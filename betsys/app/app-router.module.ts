@@ -3,10 +3,12 @@ import { RouterModule, Routes }			from '@angular/router';
 
 import { AppComponent }   				from './components/app.component';
 import { BetComponent }   				from './components/bet/bet.component';
+import { NewBoardComponent } 			from './components/bet/newboard.component';
 
 const appRoutes : Routes = [
-	{ path : '', 		component : BetComponent},
-	{ path : 'bet', 	component : BetComponent},
+	{ path : '', 		 component : BetComponent},
+	{ path : 'bet', 	 component : BetComponent},
+	{ path : 'newboard', component : NewBoardComponent}
 ];
 
 @NgModule({

@@ -7,7 +7,9 @@ import { Ng2Bs3ModalModule } 					from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { AppComponent }   						from './components/app.component';
 import { AppRouterModule }						from './app-router.module';
+import { HeaderComponent } 						from './components/header.component';
 import { BetComponent } 					  	from './components/bet/bet.component';
+import { NewBoardComponent } 					from './components/bet/newboard.component';
 
 @NgModule({
   	imports:      [
@@ -20,7 +22,9 @@ import { BetComponent } 					  	from './components/bet/bet.component';
 		],
   	declarations: [
 	  				AppComponent,
-        			BetComponent
+	  				HeaderComponent,
+        			BetComponent,
+        			NewBoardComponent
   		],
   	bootstrap:    [ AppComponent ]
 })
