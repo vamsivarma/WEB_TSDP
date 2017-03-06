@@ -715,3 +715,36 @@ table {
 	cursor: pointer;
 	margin-right: 10px;
 }
+
+
+/* -------------------- Start - For New Board -------------------------- */
+
+.container.newboard-container .bet-info-pane {
+	overflow: auto;
+	padding: 15px;
+}
+
+.component-box-holder { 
+    border: 2px double #000;
+    color: #000;
+    margin: 0 15px 15px 0;
+    text-align: center;
+    width: auto;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.component-boxes-holder {
+	margin: 10px;
+}
+
+.new-board-subtitle-common {
+	font-weight: bold;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+
+/* -------------------- End - For New Board -------------------------- */
+

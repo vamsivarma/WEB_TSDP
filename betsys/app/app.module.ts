@@ -10,6 +10,9 @@ import { AppRouterModule }						from './app-router.module';
 import { HeaderComponent } 						from './components/header.component';
 import { BetComponent } 					  	from './components/bet/bet.component';
 import { NewBoardComponent } 					from './components/bet/newboard.component';
+import { BetService } 							from './services/bet.service';
+
+import { ObjectToArrayTransform } 				from './pipes/bet.pipes';
 
 @NgModule({
   	imports:      [
@@ -24,8 +27,10 @@ import { NewBoardComponent } 					from './components/bet/newboard.component';
 	  				AppComponent,
 	  				HeaderComponent,
         			BetComponent,
-        			NewBoardComponent
+        			NewBoardComponent,
+        			ObjectToArrayTransform
   		],
+  	providers: [ BetService ],	
   	bootstrap:    [ AppComponent ]
 })
 
