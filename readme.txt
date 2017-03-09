@@ -14,6 +14,10 @@ Install python environment from https://www.continuum.io/downloads
 
 	npm run tsc:w
 
+	npm install -g gulp
+
+	npm install -g gulp-cli
+
 	gulp build
 
 

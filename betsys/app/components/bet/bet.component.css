@@ -746,5 +746,19 @@ table {
 }
 
 
+.container.newboard-container .section-button {
+	border-radius: 10px;
+	border: 1px solid #CCC;
+	color: #000;
+	min-width: 80px;
+	line-height: 20px;
+	padding: 5px 10px;
+	font-weight: bold;
+	background-color: #33CC00;
+	margin-right: 10px;
+	text-align: center;	
+}
+
+
 /* -------------------- End - For New Board -------------------------- */
 
