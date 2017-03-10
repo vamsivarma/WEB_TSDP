@@ -12,7 +12,7 @@ import { BetComponent } 					  	from './components/bet/bet.component';
 import { NewBoardComponent } 					from './components/bet/newboard.component';
 import { BetService } 							from './services/bet.service';
 
-import { ObjectToArrayTransform } 				from './pipes/bet.pipes';
+import { ObjectToArrayTransform, ReturnTextColorRelativeToBackground } 				from './pipes/bet.pipes';
 
 @NgModule({
   	imports:      [
@@ -28,7 +28,8 @@ import { ObjectToArrayTransform } 				from './pipes/bet.pipes';
 	  				HeaderComponent,
         			BetComponent,
         			NewBoardComponent,
-        			ObjectToArrayTransform
+        			ObjectToArrayTransform,
+              ReturnTextColorRelativeToBackground
   		],
   	providers: [ BetService ],	
   	bootstrap:    [ AppComponent ]

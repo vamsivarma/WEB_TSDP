@@ -756,7 +756,8 @@ table {
 	font-weight: bold;
 	background-color: #33CC00;
 	margin-right: 10px;
-	text-align: center;	
+	text-align: center;
+	cursor: pointer;	
 }
 
 

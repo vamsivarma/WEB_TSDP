@@ -12,8 +12,9 @@ export const htmlTemplate = `
               <div class="right-float-common">
                 <div class="left-float-common">
                   <div class="section-button left-float-common" 
-                      *ngFor="let button of pageMeta.colorSection.buttons">  <!-- Make this clickable -->         
-                        {{button.label}}
+                      *ngFor="let buttonMeta of pageMeta.colorSection.buttons"
+                      (click)="colorSectionAction(buttonMeta.key)">          
+                        {{buttonMeta.label}}
                   </div>              
                 </div>
               </div>
@@ -32,7 +33,8 @@ export const htmlTemplate = `
               <div class="component-box-holder left-float-common"
                   *ngIf="component.sectionIndex === 0"
                   [style.backgroundColor]="component.bgColor"
-                  [style.color]="component.textColor">  <!-- Make this clickable -->         
+                  [style.color]="component.textColor" 
+                  (click)="openColorPicker(component)" >           
                 {{component.key}}
               </div>
             </template>
@@ -47,8 +49,9 @@ export const htmlTemplate = `
               <div class="right-float-common">
                 <div class="left-float-common">
                   <div class="section-button left-float-common" 
-                      *ngFor="let button of pageMeta.dragDropSection.buttons">  <!-- Make this clickable -->         
-                        {{button.label}}
+                      *ngFor="let buttonMeta of pageMeta.dragDropSection.buttons"
+                      (click)="dragDropSectionAction(buttonMeta.key)">         
+                        {{buttonMeta.label}}
                   </div>              
                 </div>
               </div>
