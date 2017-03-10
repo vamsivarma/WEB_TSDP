@@ -34,8 +34,9 @@ export const htmlTemplate = `
                   *ngIf="component.sectionIndex === 0"
                   [style.backgroundColor]="component.bgColor"
                   [style.color]="component.textColor" 
-                  (click)="openColorPicker(component)" >           
+                  (click)="openColorPicker(component, $event)" >           
                 {{component.key}}
+                <input class="color-input" type="color" value="{{component.bgColor}}" (change)="updateComponentStyles(component)" />
               </div>
             </template>
           </div>  

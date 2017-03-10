@@ -19,6 +19,8 @@ export class NewBoardComponent {
       componentsLen = 0;
       componentsAssoc = {};
 
+      selectedComponentInput : any;
+
       objectToArrayPipe = new ObjectToArrayTransform();
       returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground();
 
@@ -33,7 +35,7 @@ export class NewBoardComponent {
                           
                           "buttons": [{
                                   "key": "auto-select",
-                                  "label": "Äuto-Select"
+                                  "label": "Auto-Select"
                                 }, {
                                   "key": "reset",
                                   "label": "Reset"    
@@ -170,6 +172,18 @@ export class NewBoardComponent {
                 }
             }
         }    
+     }
+
+     openColorPicker(curComp, $event) {
+      $event.stopPropagation();
+      this.selectedComponentInput = $event.currentTarget.firstElementChild;
+      this.selectedComponentInput.click();
+
+     }
+
+     updateComponentStyles(curComp) {
+      curComp['bgColor'] = this.selectedComponentInput.value;
+      curComp['textColor'] = this.returnTextColorRelativeToBackground.transform(curComp['bgColor']);
      }
 
      dragDropSectionAction(type) {
