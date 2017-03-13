@@ -722,6 +722,7 @@ table {
 .container.newboard-container .bet-info-pane {
 	overflow: auto;
 	padding: 15px;
+	min-height: 200px;
 }
 
 .component-box-holder { 
@@ -747,17 +748,15 @@ table {
 
 
 .container.newboard-container .section-button {
-	border-radius: 10px;
-	border: 1px solid #CCC;
-	color: #000;
-	min-width: 80px;
-	line-height: 20px;
-	padding: 5px 10px;
-	font-weight: bold;
-	background-color: #33CC00;
-	margin-right: 10px;
-	text-align: center;
-	cursor: pointer;	
+	border-radius: 20px;
+    color: #000;
+    min-width: 120px;
+    line-height: 35px;
+    font-weight: 700;
+    background-color: #d0d27a;
+    margin-right: 10px;
+    text-align: center;
+    cursor: pointer;	
 }
 
 .container.newboard-container .color-input {
@@ -777,6 +776,27 @@ table {
 .container.newboard-container .component-box-holder {
 	position: relative;
 }
+
+.container.newboard-container .bet-new-table-col-common {
+	border: none;
+	background: #000000;
+}
+
+.container.newboard-container .blank-board-holder {
+	clear: both;
+	padding-top: 30px;
+}
+
+.container.newboard-container .bet-risk {
+	border: none;
+}
+
+.container.newboard-container .bet-risk-cell-0, 
+.container.newboard-container .bet-risk-cell-1 {
+	border: 1px solid #000000;
+}
+
+
 
 /* -------------------- End - For New Board -------------------------- */
 

@@ -6,7 +6,8 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './newboard.component.html';
 import { BetService } 	from 'app/services/bet.service';
 
-import { ObjectToArrayTransform, ReturnTextColorRelativeToBackground }  from 'app/pipes/bet.pipes';
+import { ListToObjectTransform, ObjectToArrayTransform, 
+         ReturnTextColorRelativeToBackground, ArrayShuffle }  from 'app/pipes/bet.pipes';
  
 @Component({
     selector : 'relative-path',
@@ -19,12 +20,57 @@ export class NewBoardComponent {
       componentsLen = 0;
       componentsAssoc = {};
 
+      recordsMeta = {};
+      stylesMeta = {};
+
+      // For bet box..
+      cols = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
+
+      betCellCommonStyles = {
+        tsize: 24,
+        tstyle: "bold",
+        font: "Book Antigua"
+      };
+
+      // Row condition 1..
+      condCells = [
+          // Main condition..
+          [
+              {color:"#000000", bgColor:"#FFFFFF", condID:12, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:13, text:"", orgText:""}
+          ],
+          // Col condition..
+          [
+              {color:"#000000", bgColor:"#FFFFFF", condID:0, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:2, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:3, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:7, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:8, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:9, text:"", orgText:""}
+          ],
+          // Row condition 1..
+          [
+              {color:"#000000", bgColor:"#FFFFFF", condID:4, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:5, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""}           
+          ],
+          // Row condition 2..
+          [
+              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""}
+          ],
+      ];
+
       selectedComponentInput : any;
 
+      listToObjectPipe = new ListToObjectTransform();
       objectToArrayPipe = new ObjectToArrayTransform();
-      returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground();
+      returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground(); 
+      arrayShuffle = new ArrayShuffle();
 
     	pageMeta = {
+        "pageSectionBackground": "",
         "colorDefaults": ['#BE0032', '#222222', '#4FF773', '#FFFF00', '#A1CAF1', '#C2B280',
                           '#E68FAC', '#F99379', '#F38400', '#848482', '#008856', '#0067A5', '#604E97',
                           '#B3446C', '#654522', '#EA2819'],
@@ -42,7 +88,9 @@ export class NewBoardComponent {
                                 }, {
                                   "key": "save",
                                   "label": "Save"
-                          }]
+                          }],
+
+                          "errorText": ""
                         },
           "dragDropSection": {
                           "title": "Drag and drop components to blank boxes below. You may leave boxes blank.",
@@ -52,7 +100,9 @@ export class NewBoardComponent {
                            "buttons": [{
                                   "key": "reset",
                                   "label": "Reset"
-                                }]
+                                }],
+
+                            "errorText": ""
                         },
            "blankBoardSection": {
                           "title": "",
@@ -65,7 +115,9 @@ export class NewBoardComponent {
                                 }, {
                                   "key": "save",
                                   "label": "Save"
-                            }]
+                            }],
+
+                           "errorText": "" 
            }                                   
     	};
 
@@ -75,8 +127,57 @@ export class NewBoardComponent {
           private router:Router,
           private betService: BetService
       ) {
-
+        this.getRecords();
       	this.getComponentsList();
+      }
+
+
+      getRecords() {
+        var _this = this;
+
+        this.betService
+            .getRecords()
+            .then(function(response) {
+
+              _this.recordsMeta = response.first;
+
+              _this.customBoardStylesMeta = _this.listToObjectPipe.transform(response.first.customstyles);
+
+              _this.assignPageMeta();
+
+            })
+            .catch(error => this.error = error);
+      }
+
+      assignPageMeta() {
+        this.pageMeta.colorSection.buttons[0]['label'] = this.customBoardStylesMeta['b_auto_select']['text'];
+        this.pageMeta.colorSection.buttons[1]['label'] = this.customBoardStylesMeta['b_reset_colors']['text'];
+        this.pageMeta.colorSection.buttons[2]['label'] = this.customBoardStylesMeta['b_save_colors']['text'];
+
+        this.pageMeta.blankBoardSection.buttons[0]['label'] = this.customBoardStylesMeta['b_reset_board']['text'];
+        this.pageMeta.blankBoardSection.buttons[1]['label'] = this.customBoardStylesMeta['b_save_board']['text'];
+
+        this.pageMeta.colorSection.errorText = this.customBoardStylesMeta['d_save_color_error']['text'];
+        this.pageMeta.blankBoardSection.errorText = this.customBoardStylesMeta['d_save_board_error']['text'];
+        this.pageMeta.pageSectionBackground = "#" + this.customBoardStylesMeta['background']['fill-Hex'];
+
+        this.pageMeta.colorSection.subtitle = this.customBoardStylesMeta['text_choose_colors']['text'];
+        this.pageMeta.dragDropSection.title = this.customBoardStylesMeta['text_place_components']['text'];
+
+        this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);       
+
+      }
+
+      pushAutoSelectColors(colorsAry) {
+
+        var colors = [];
+        
+        for(var i=0; i < colorsAry.length; i++) {
+            var curColor = "#" + colorsAry[i].fill-Hex;
+            colors.push(curColor);
+        }
+
+        return colors;
       }
 
       getComponentsList() {
@@ -135,6 +236,7 @@ export class NewBoardComponent {
      }
 
      applyAutoSelectColors() {
+          this.pageMeta.colorDefaults = this.arrayShuffle.transform(this.pageMeta.colorDefaults);
           var autoColorsAryLen = this.pageMeta.colorDefaults.length;
           for(var i = 0; i < this.componentsLen; i++) {
             var curComp = this.components[i];

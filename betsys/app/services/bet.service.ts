@@ -22,6 +22,16 @@ export class BetService {
   
   }
 
+  getRecords() {
+    var url =   this.baseURL + '/getrecords';
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);

@@ -1,6 +1,28 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 /*
+ * Takes a list(array of objects) and returns an object(with all the keys in the individual object of the list item grouped and listed as a single object) 
+*/
+@Pipe({name: 'listToObjectTransform'})
+export class ListToObjectTransform implements PipeTransform {
+  
+  transform(value, args:any[]) : any {
+    let listObj = {};
+
+    for(var i=0; i < value.length; i++) {
+    	var curObj = value[i];
+
+    	for(var key in curObj) {
+    		if(curObj.hasOwnProperty(key)) {
+    			listObj[key] = curObj[key];
+    		} 
+    	}
+    }
+    return listObj;
+  }
+}
+
+/*
  * Takes an object and returns an array
 */
 @Pipe({name: 'objectToArrayTransform'})
@@ -15,7 +37,35 @@ export class ObjectToArrayTransform implements PipeTransform {
     
     return keys;
   }
+}
 
+
+/*
+ * Takes an array and shuffles its index positions
+*/
+@Pipe({name: 'arrayShuffle'})
+export class ArrayShuffle implements PipeTransform {
+  
+  transform(value, args:any[]) : any {
+    let shuffledAry = value;
+    
+    var currentIndex = shuffledAry.length, temporaryValue, randomIndex;
+
+  	// While there remain elements to shuffle...
+  	while (0 !== currentIndex) {
+
+    	// Pick a remaining element...
+    	randomIndex = Math.floor(Math.random() * currentIndex);
+    	currentIndex -= 1;
+
+    	// And swap it with the current element.
+    	temporaryValue = shuffledAry[currentIndex];
+    	shuffledAry[currentIndex] = shuffledAry[randomIndex];
+    	shuffledAry[randomIndex] = temporaryValue;
+  	}
+
+  	return shuffledAry;
+  }
 }
 
 /*
