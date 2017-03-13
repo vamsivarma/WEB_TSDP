@@ -780,6 +780,7 @@ table {
 .container.newboard-container .bet-new-table-col-common {
 	border: none;
 	background: #000000;
+	cursor: no-drop;
 }
 
 .container.newboard-container .blank-board-holder {
@@ -795,6 +796,11 @@ table {
 .container.newboard-container .bet-risk-cell-1 {
 	border: 1px solid #000000;
 }
+
+.container.newboard-container .bet-table-left-panel {
+	cursor: no-drop;
+}
+
 
 
 

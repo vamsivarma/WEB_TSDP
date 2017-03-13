@@ -33,14 +33,12 @@ export class NewBoardComponent {
       };
 
       // Row condition 1..
-      condCells = [
-          // Main condition..
-          [
+      condCells = {
+          "bottom2": [
               {color:"#000000", bgColor:"#FFFFFF", condID:12, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:13, text:"", orgText:""}
           ],
-          // Col condition..
-          [
+          "bottom1": [
               {color:"#000000", bgColor:"#FFFFFF", condID:0, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:2, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:3, text:"", orgText:""},
@@ -48,19 +46,17 @@ export class NewBoardComponent {
               {color:"#000000", bgColor:"#FFFFFF", condID:8, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:9, text:"", orgText:""}
           ],
-          // Row condition 1..
-          [
+          "right1": [
               {color:"#000000", bgColor:"#FFFFFF", condID:4, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:5, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""}           
           ],
-          // Row condition 2..
-          [
+          "right2": [
               {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""}
-          ],
-      ];
+          ]
+      };
 
       selectedComponentInput : any;
 
@@ -120,6 +116,24 @@ export class NewBoardComponent {
                            "errorText": "" 
            }                                   
     	};
+
+      componentShorthands = {
+        'Off' : 'Off',
+        'RiskOn': 'RON',
+        'RiskOff': 'ROFF',
+        'LowestEquity': 'LE',
+        'HighestEquity': 'HE',
+        'AntiHighestEquity': 'AHE',
+        'AntiLowestEquity': 'ALE',
+        'Anti50/50': 'A50',
+        'Seasonality': 'SEA',
+        'Anti-Seasonality': 'ASEA',
+        'Previous': 'PREV',
+        'Anti-Previous': 'AP',
+        'Custom': 'Custom',
+        'Anti-Custom': 'AC',
+        '50/50': '50/50'
+      };
 
     	error: any;
 
@@ -221,7 +235,9 @@ export class NewBoardComponent {
           curComp['bgColor'] = '#FFFFFF';
           curComp['textColor'] = '#000000';
           curComp['sectionIndex'] = 0;
-          curComp['boardIndex'] =  'c' + index;
+          curComp['boardIndex'] =  '';
+          
+          //@TODO: Need to remove this if not used
           curComp['componentIndex'] = index;
      }
 
@@ -304,5 +320,58 @@ export class NewBoardComponent {
                   curComp['sectionIndex'] = 0;    
             }
         }
+     }
+
+     droppedComponent(event, cellObj) {
+
+        if(cellObj['orgText'] === '') {
+            var draggedComponent = event.dragData;
+            cellObj['bgColor'] = draggedComponent['bgColor'];
+            cellObj['color'] = draggedComponent['textColor'];
+            cellObj['text'] = this.componentShorthands[draggedComponent['key']];
+            cellObj['orgText'] = draggedComponent['key'];
+
+            draggedComponent['boardIndex'] =  'c' + cellObj['condID'];
+            draggedComponent['sectionIndex'] = 2;
+        } else {
+          return;
+        }
+     }
+
+    blankBoardAction(type) {
+          switch(type) {
+            case "reset": this.applyBlankBoardReset(); break; 
+            case "save": this.saveBlankBoard(); break;
+            default: break;
+          }
+     }
+
+     applyBlankBoardReset() {
+
+        for(var key in this.condCells) {
+            var curCellGroup = this.condCells[key];
+
+            for(var i=0; i < curCellGroup.length; i++) {
+              var curCell = curCellGroup[i];
+              var componentKey = curCell['orgText'];
+
+              if(componentKey !== '') {
+                  curCell['color'] = '#000000';
+                  curCell['bgColor'] = '#FFFFFF';
+                  curCell['text'] = '';
+                  curCell['orgText'] = '';  
+                
+                  //Move the component from blank board to draggable section
+                  var componentMeta = this.componentsAssoc[componentKey];
+                  componentMeta['boardIndex'] =  '';
+                  componentMeta['sectionIndex'] = 1;  
+              }
+
+            }
+        }
+     }
+
+     saveBlankBoard() {
+
      }
 }

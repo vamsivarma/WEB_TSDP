@@ -68,9 +68,7 @@ export const htmlTemplate = `
               [style.color]="component.textColor"
               dnd-draggable 
               [dragData]="component" 
-              [dragEnabled]="true"
-              ng-reflect-draggable="true"
-              [dropZones]="['drop-cell', 'cond-cell']" >      <!-- Make this draggable -->     
+              [dragEnabled]="true">     
             {{component.key}}
           </div>
         </template>
@@ -84,8 +82,9 @@ export const htmlTemplate = `
               <div class="right-float-common">
                 <div class="left-float-common">
                   <div class="section-button left-float-common" 
-                      *ngFor="let button of pageMeta.blankBoardSection.buttons">  <!-- Make this clickable -->         
-                        {{button.label}}
+                      *ngFor="let buttonMeta of pageMeta.blankBoardSection.buttons"
+                       (click)="blankBoardAction(buttonMeta.key)" >           
+                        {{buttonMeta.label}}
                   </div>              
                 </div>
               </div>
@@ -105,10 +104,11 @@ export const htmlTemplate = `
 
             <!--right pane 1-->
             <div class="bet-table-right-pane">
-                <div class="pane-cell"  
-                  *ngFor="let item of condCells[2]; let id=index;" 
+                <div class="pane-cell" title="{{item.orgText}}"  
+                  *ngFor="let item of condCells['right1']; let id=index;" 
                   [style.background-color] = "item.bgColor"
-                  dnd-droppable>
+                  (onDropSuccess)="droppedComponent($event, item)"
+                  dnd-droppable >
                     <div class="pane-cell-caption" [style.color]="item.color">
                       <div 
                         style="display: table-cell; vertical-align: middle;"
@@ -123,10 +123,11 @@ export const htmlTemplate = `
 
             <!--right pane 2-->
             <div class="bet-table-right-pane">
-                <div class="pane-cell"  
-                  *ngFor="let item of condCells[3]; let id=index;" 
+                <div class="pane-cell" title="{{item.orgText}}" 
+                  *ngFor="let item of condCells['right2']; let id=index;" 
                   [style.background-color] = "item.bgColor"
-                  dnd-droppable>
+                  (onDropSuccess)="droppedComponent($event, item)"
+                  dnd-droppable >
                     <div class="pane-cell-caption" [style.color]="item.color">
                       <div 
                         style="display: table-cell; vertical-align: middle;"
@@ -142,10 +143,11 @@ export const htmlTemplate = `
             <!--Bottom Pane-->
             <div class="bet-table-bottom-section">
                 <div class="bet-table-bottom-pane">
-                  <div class="bottom-cell"  
-                    *ngFor="let item of condCells[1]; let id=index;" 
+                  <div class="bottom-cell" title="{{item.orgText}}"
+                    *ngFor="let item of condCells['bottom1']; let id=index;" 
                     [style.background-color] = "item.bgColor"
-                    dnd-droppable>
+                    (onDropSuccess)="droppedComponent($event, item)"
+                    dnd-droppable >
                       <div class="pane-cell-caption" [style.color]="item.color">
                         <div 
                           style="display: table-cell; vertical-align: middle;"
@@ -159,15 +161,15 @@ export const htmlTemplate = `
                  </div> 
             </div>
 
-            <!--pane for risk-->
+            <!--Bottom Pane 2 -->
             <div class="bet-risk">
               <div
-                class="bet-risk-cell-{{id % 2}}"
-                *ngFor="let item of condCells[0]; let id=index;" 
+                class="bet-risk-cell bet-risk-cell-{{id % 2}}" title="{{item.orgText}}"
+                *ngFor="let item of condCells['bottom2']; let id=index;" 
                 [style.backgroundColor] = "item.bgColor"
-                dnd-droppable 
-              >
-                <div class="risk-cell-caption">
+                (onDropSuccess)="droppedComponent($event, item)"
+                dnd-droppable >
+                <div class="risk-cell-caption" [style.color]="item.color">
                   <div 
                     style="display: table-cell; vertical-align: middle;"
                     [style.fontSize.px] = "betCellCommonStyles.tsize"
