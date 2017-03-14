@@ -802,6 +802,15 @@ table {
 }
 
 
+.container.newboard-container .bet-off-cls {
+	margin-right: 5px; 
+	padding-top: 145px; 
+	padding-left: 14px; 
+	margin-top: -62px;  
+	font-family: bold; 
+	font-size: 24px; 
+	font-weight: bold;
+}
 
 
 /* -------------------- End - For New Board -------------------------- */

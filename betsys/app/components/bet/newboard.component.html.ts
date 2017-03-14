@@ -92,9 +92,12 @@ export const htmlTemplate = `
 
         <div class="blank-board-holder">
             <div class="bet-table-left-pane">
-                <div class="bet-table-left-panel" style="border-right: 66px solid rgb(34, 88, 35);">
-                  <div style="margin-right: 5px; padding-top: 145px; padding-left: 14px; margin-top: -62px; color: rgb(255, 255, 255); font-family: bold; font-size: 24px; font-weight: bold;">
-                Off
+                <div class="bet-table-left-panel" 
+                  [style.border-right-color] = "componentsAssoc['Off']['bgColor']"
+                  style="border-right: 66px solid;" >
+                  <div class="bet-off-cls"
+                    [style.color]="componentsAssoc['Off']['textColor']" >
+                      Off
                   </div>  
                 </div>
             </div>
