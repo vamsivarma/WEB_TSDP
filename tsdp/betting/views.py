@@ -28,12 +28,12 @@ def addrecord(request):
     #get_blends(cloc=cloc, list_boxstyles=list_boxstyles)
 
     #for user customized styles (maybe later)
-    #list_boxstyles = json.loads(request.GET['boxstyles'])
-    #if list_boxstyles != []:
-    #   #create new boxstyles json
-    #   get_blends(cloc=cloc, list_boxstyles=list_boxstyles)
-
-    votingComponents=get_blends(cloc=cloc, returnVotingComponents=True)
+    list_boxstyles = json.loads(request.GET['boxstyles'])
+    if list_boxstyles != []:
+        ##create new boxstyles json
+        votingComponents=get_blends(cloc=cloc, list_boxstyles=list_boxstyles)
+    else:    
+        votingComponents=get_blends(cloc=cloc)
 
     record = UserSelection(userID=request.GET['user_id'], selection=request.GET['Selection'], \
                             v4futures=json.dumps(votingComponents), v4mini=json.dumps(votingComponents), \
