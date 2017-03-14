@@ -19,10 +19,11 @@ export class NewBoardComponent {
     	components = [];
       componentsLen = 0;
       componentsAssoc = {
-        'Off': {
-          'bgColor': '#FFFFFF',
-          'textColor': '#000000'
-        }
+      };
+
+      componentOff = {
+        'bgColor': '#FFFFFF',
+        'textColor': '#000000'
       };
 
       recordsMeta = {};
@@ -291,9 +292,15 @@ export class NewBoardComponent {
             //Make the components draggable if their background color is changed(i.e.., not the default #FFFFFF)
             //Since Off is not a draggable component, dont allow it to be moved to draggable section
             if(curComp['sectionIndex'] === 0) {
-                if(curComp['bgColor'] !== "#FFFFFF" && curComp['key'] !== "Off") {
-                  curComp['sectionIndex'] = 1;    
-                }
+                if(curComp['bgColor'] !== "#FFFFFF") {
+                  if(curComp['key'] !== "Off") {
+                    curComp['sectionIndex'] = 1;
+                  } else {
+                    this.componentOff['bgColor'] = this.componentsAssoc['Off']['bgColor'];
+                    this.componentOff['textColor'] = this.componentsAssoc['Off']['textColor'];              
+                  }
+                      
+                } 
             }
         }    
      }

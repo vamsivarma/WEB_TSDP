@@ -93,10 +93,10 @@ export const htmlTemplate = `
         <div class="blank-board-holder">
             <div class="bet-table-left-pane">
                 <div class="bet-table-left-panel" 
-                  [style.border-right-color] = "componentsAssoc['Off']['bgColor']"
+                  [style.border-right-color] = "componentOff['bgColor']"
                   style="border-right: 66px solid;" >
                   <div class="bet-off-cls"
-                    [style.color]="componentsAssoc['Off']['textColor']" >
+                    [style.color]="componentOff['textColor']" >
                       Off
                   </div>  
                 </div>

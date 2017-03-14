@@ -196,7 +196,7 @@ def recreateCharts():
     time.sleep(15)
     pass
 
-def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=False):
+def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=True):
     def is_int(s):
         try:
             int(s)
@@ -205,12 +205,16 @@ def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=False):
             return False
 
     if cloc == None:
-        cloc = UserSelection.default_cloc
+        firstrec=UserSelection.objects.order_by('-timestamp').first()
+        cloc = eval(firstrec.dic()['componentloc'])
 
     if list_boxstyles == None:
-        list_boxstyles = UserSelection.default_list_boxstyles
-    else:
-        list_boxstyles = [d for d in list_boxstyles if not is_int(d.keys()[0])]
+        filename='boxstyles_data.json'
+        with open(filename, 'r') as f:
+            json_boxstyles = json.load(f)
+        #list_boxstyles = UserSelection.default_list_boxstyles
+    #else:
+    #    list_boxstyles = [d for d in list_boxstyles if not is_int(d.keys()[0])]
 
     # print([cl.keys()[0] for cl in cloc])
     component_styles = {bs.keys()[0]: bs.values()[0] for bs in list_boxstyles if
@@ -259,11 +263,7 @@ def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=False):
     boxstyleDict = {boxid: [component_styles[x] for x in boxidDict[boxid] if component_names[x] is not 'None'] for
                     boxid
                     in boxidDict}
-    if returnVotingComponents:
-        votingComponents = {boxid: [getComponents()[component_names[x]][0] for x in clist if component_names[x] != 'None']
-                            for boxid, clist in boxidDict.items()}
-        print ([x, votingComponents[x]] for x in sorted(votingComponents.keys(), key=int))
-        return votingComponents
+
 
     blendedboxstyleDict = {}
     for boxid, list_of_styles in boxstyleDict.items():
@@ -323,14 +323,27 @@ def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=False):
                                           'text-font': 'Arial Black',
                                           'text-size': '18',
                                           'text-style': 'bold'}
-    keys = blendedboxstyleDict.keys()
-    keys.sort(key=int)
-    list_boxstyles += [{key: blendedboxstyleDict[key]} for key in keys]
+    #keys = blendedboxstyleDict.keys()
+    #keys.sort(key=int)
+    indices = [i for i,d in enumerate(list_boxstyles) if is_int(d.keys()[0])]
+    #list_boxstyles += [{key: blendedboxstyleDict[key]} for key in keys]
+    for i in indices:
+        key=list_boxstyles[i].keys()[0]
+        list_boxstyles[i]={key: blendedboxstyleDict[key]}
+        print(list_boxstyles[i])
 
+    print(list_boxstyles)
     filename = 'boxstyles_data.json'
     with open(filename, 'w') as f:
         json.dump(list_boxstyles, f)
-    print ('Saved', filename)
+    print('Saved', filename)
+
+    if returnVotingComponents:
+        votingComponents = {boxid: [getComponents()[component_names[x]][0] for x in clist if component_names[x] != 'None']
+                            for boxid, clist in boxidDict.items()}
+        #print [[x, votingComponents[x]] for x in sorted(votingComponents.keys(), key=int)]
+        print(votingComponents)
+        return votingComponents
     # return cloc, list_boxstyles
 
 def get_timetables():
