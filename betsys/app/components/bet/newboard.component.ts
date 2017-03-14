@@ -20,6 +20,9 @@ export class NewBoardComponent {
       componentsLen = 0;
       componentsAssoc = {
       };
+      componentLoc = [];
+
+      baseURL = "";
 
       componentOff = {
         'bgColor': '#FFFFFF',
@@ -41,26 +44,26 @@ export class NewBoardComponent {
       // Row condition 1..
       condCells = {
           "bottom2": [
-              {color:"#000000", bgColor:"#FFFFFF", condID:12, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:13, text:"", orgText:""}
+              {color:"#000000", bgColor:"#FFFFFF", condID:1, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:2, text:"", orgText:""}
           ],
           "bottom1": [
-              {color:"#000000", bgColor:"#FFFFFF", condID:0, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:2, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:3, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:7, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:8, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:9, text:"", orgText:""}
-          ],
-          "right1": [
               {color:"#000000", bgColor:"#FFFFFF", condID:4, text:"", orgText:""},
               {color:"#000000", bgColor:"#FFFFFF", condID:5, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""}           
+              {color:"#000000", bgColor:"#FFFFFF", condID:6, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:7, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:8, text:"", orgText:""}
+          ],
+          "right1": [
+              {color:"#000000", bgColor:"#FFFFFF", condID:9, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:11, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:13, text:"", orgText:""}           
           ],
           "right2": [
-              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""},
-              {color:"#000000", bgColor:"#FFFFFF", condID:-1, text:"", orgText:""}
+              {color:"#000000", bgColor:"#FFFFFF", condID:10, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:12, text:"", orgText:""},
+              {color:"#000000", bgColor:"#FFFFFF", condID:14, text:"", orgText:""}
           ]
       };
 
@@ -72,6 +75,7 @@ export class NewBoardComponent {
       arrayShuffle = new ArrayShuffle();
 
     	pageMeta = {
+        "cNone": {},
         "pageSectionBackground": "",
         "colorDefaults": ['#BE0032', '#222222', '#4FF773', '#FFFF00', '#A1CAF1', '#C2B280',
                           '#E68FAC', '#F99379', '#F38400', '#848482', '#008856', '#0067A5', '#604E97',
@@ -145,7 +149,8 @@ export class NewBoardComponent {
 
       constructor(
           private router:Router,
-          private betService: BetService
+          private betService: BetService,
+          private http: Http
       ) {
         this.getRecords();
       	this.getComponentsList();
@@ -162,6 +167,8 @@ export class NewBoardComponent {
               _this.recordsMeta = response.first;
 
               _this.customBoardStylesMeta = _this.listToObjectPipe.transform(response.first.customstyles);
+
+              _this.boxStyles = _this.recordsMeta.boxstyles;
 
               _this.assignPageMeta();
 
@@ -185,6 +192,7 @@ export class NewBoardComponent {
         this.pageMeta.dragDropSection.title = this.customBoardStylesMeta['text_place_components']['text'];
 
         this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);       
+        this.pageMeta.cNone = this.customBoardStylesMeta['cNone'];
 
       }
 
@@ -386,5 +394,96 @@ export class NewBoardComponent {
 
      saveBlankBoard() {
 
-     }
+        var db_Selection = {
+            "v4micro" : ["Off", "False"],
+            "v4mini" : ["Off", "False"],
+            "v4futures" : ["Off", "False"]
+        };
+
+        this.saveComponentLocations();
+
+        let header = new Headers({'Content-Type':'application/json'});
+        let options = new RequestOptions({headers:header});
+        var body =   this.baseURL + '/addrecord?user_id=' + 32 + 
+                '&Selection =' + encodeURIComponent(JSON.stringify(db_Selection)) +
+                '&boxstyles =' + encodeURIComponent(JSON.stringify(this.boxStyles)) +
+                '&componentloc=' + encodeURIComponent(JSON.stringify(this.componentLoc));
+
+        return this.http.get(body).subscribe(response => {
+            //this.test_value2 = JSON.stringify(response);
+            //this.confirmBtnText = "Process Orders";
+            //this.confirmDialog("Successfully saved!", 1);
+            console.log("Success....");
+        }, error => {
+            //this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
+            //this.test_value2 = "Error Code : " + error;
+            console.log("Error....");
+        });        
+  
+    }
+
+    saveComponentLocations() {
+
+      var componentLoc = [{
+                          "c0": "Off"
+                      }];
+
+      for(var cellGrpKey in this.condCells) {
+        var curCellGrp = this.condCells[cellGrpKey];
+
+        var curCellLen = curCellGrp.length;
+        
+        for(var i=0; i < curCellLen; i++) {
+          var curCell = curCellGrp[i];
+
+          var curIndex = curCell.condID;
+          componentLoc[curIndex] = {};
+
+          var curBoxStyleObj = this.boxStyles[curIndex]['c' + curIndex]
+
+          if(curCell.orgText !== '') {
+            //Cell on the board is not empty
+            componentLoc[curIndex]['c' + curIndex] = curCell.orgText;
+
+            curBoxStyleObj['text'] = this.componentShorthands[curCell.orgText];
+
+            curBoxStyleObj['fill-Hex'] = curCell.bgColor.substring(1); //Remove preceding #
+            
+            var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(curCell.bgColor);
+
+            curBoxStyleObj['fill-R'] = hexToRGBObj.r;
+            curBoxStyleObj['fill-G'] = hexToRGBObj.g;
+            curBoxStyleObj['fill-B'] = hexToRGBObj.b;
+            curBoxStyleObj['text-color'] = curCell.color;
+
+          } else {
+            //Cell is empty
+            componentLoc[curIndex]['c' + curIndex] = "None";
+            curBoxStyleObj = this.pageMeta.cNone;
+          }
+        }  
+      }
+
+      this.applyOffComponentStyles();
+
+      this.componentLoc = componentLoc;
+    }
+
+    applyOffComponentStyles() {
+
+      var offObj = this.boxStyles[0]['c0'];
+      var bgColor = this.componentOff['bgColor'];
+
+      if(bgColor !== "#FFFFFF") {
+        var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(bgColor);
+
+        offObj['fill-Hex'] = bgColor.substring(1); //Remove preceding #
+
+        offObj['fill-R'] = hexToRGBObj.r;
+        offObj['fill-G'] = hexToRGBObj.g;
+        offObj['fill-B'] = hexToRGBObj.b;
+        offObj['text-color'] = this.componentOff.textColor;
+      }
+    }
+
 }
