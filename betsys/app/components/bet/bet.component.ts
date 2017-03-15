@@ -1060,13 +1060,15 @@ export class BetComponent {
         this.hideChartDialogues();
 
         this.structData();
+
+        var boxStyles = [];
+
+
         let header = new Headers({'Content-Type':'application/json'});
         let options = new RequestOptions({headers:header});
         var body =   this.baseURL + '/addrecord?user_id=' + 32 + 
                 '&Selection=' + encodeURIComponent(JSON.stringify(this.db_Selection)) +
-                '&v4micro=' + encodeURIComponent(JSON.stringify(this.db_v4micro)) +
-                '&v4mini=' + encodeURIComponent(JSON.stringify(this.db_v4mini)) +
-                '&v4futures=' + encodeURIComponent(JSON.stringify(this.db_v4futures)) +
+                '&boxstyles=' + encodeURIComponent(JSON.stringify(boxStyles)) +
                 '&componentloc=' + encodeURIComponent(JSON.stringify(this.db_componentloc));
 
         console.log(body);
