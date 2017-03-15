@@ -533,3 +533,6 @@ tsdp/**/*.pyc
 /betsys/static/public/images/left_pane_bg.PNG
 /betsys/static/public/images/logo.png
 /betsys/static/public/images/performance_button.png
+/tsdp/*.sqlite3
+/tsdp/betting/static/images/*.png
+/tsdp/tsdp/static/images/*.png
