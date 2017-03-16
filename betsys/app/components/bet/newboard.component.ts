@@ -22,6 +22,13 @@ export class NewBoardComponent {
       };
       componentLoc = [];
 
+
+      db_Selection = {
+        "v4micro" : ["Off", "False"],
+        "v4mini" : ["Off", "False"],
+        "v4futures" : ["Off", "False"]
+      };
+
       baseURL = "";
 
       componentOff = {
@@ -393,33 +400,30 @@ export class NewBoardComponent {
      }
 
      saveBlankBoard() {
-
-        var db_Selection = {
-            "v4micro" : ["Off", "False"],
-            "v4mini" : ["Off", "False"],
-            "v4futures" : ["Off", "False"]
-        };
-
-        this.saveComponentLocations();
-
         let header = new Headers({'Content-Type':'application/json'});
         let options = new RequestOptions({headers:header});
-        var body =   this.baseURL + '/addrecord?user_id=' + 32 + 
-                '&Selection =' + encodeURIComponent(JSON.stringify(db_Selection)) +
-                '&boxstyles =' + encodeURIComponent(JSON.stringify(this.boxStyles)) +
-                '&componentloc=' + encodeURIComponent(JSON.stringify(this.componentLoc));
+        var apiURL = this.baseURL + "/addrecord";
+        var body = this.db_JSON_Stringify();
 
-        return this.http.get(body).subscribe(response => {
-            //this.test_value2 = JSON.stringify(response);
-            //this.confirmBtnText = "Process Orders";
-            //this.confirmDialog("Successfully saved!", 1);
+        return this.http.post(apiURL, body, options).subscribe(response => {
             console.log("Success....");
         }, error => {
-            //this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
-            //this.test_value2 = "Error Code : " + error;
             console.log("Error....");
-        });        
-  
+        });    
+    }
+
+    db_JSON_Stringify() {
+
+        this.saveComponentLocations();
+        
+        var jsonData = {
+            'user_id' : 32,
+            'Selection' : this.db_Selection,
+            'boxstyles' : this.boxStyles,
+            'componentloc' : this.componentLoc
+        };
+
+        return JSON.stringify(jsonData);
     }
 
     saveComponentLocations() {

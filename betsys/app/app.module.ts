@@ -1,6 +1,6 @@
 import { NgModule }      						from '@angular/core';
 import { BrowserModule } 						from '@angular/platform-browser';
-import { HttpModule, Http}          from '@angular/http';
+import { HttpModule, XSRFStrategy, CookieXSRFStrategy, Http}          from '@angular/http';
 import { FormsModule }							from '@angular/forms';
 import { DndModule } 							  from 'ng2-dnd';
 import { Ng2Bs3ModalModule } 				from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -34,7 +34,10 @@ import { ListToObjectTransform, ObjectToArrayTransform,
           ReturnTextColorRelativeToBackground,
           ArrayShuffle
   		],
-  	providers: [ BetService ],	
+  	providers: [ BetService, {
+            provide: XSRFStrategy,
+            useValue: new CookieXSRFStrategy('csrftoken', 'X-CSRFToken')
+          }],	
   	bootstrap: [ AppComponent ]
 })
 

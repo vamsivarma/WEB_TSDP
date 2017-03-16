@@ -1106,24 +1106,15 @@ export class BetComponent {
     }
 
     db_JSON_Stringify() {
-        // For get mothod..
-        // var jsonURL =   '/addrecord?user_id=' + userID + 
-        //                 '&Selection=' + encodeURIComponent(JSON.stringify(this.db_Selection)) +
-        //                 '&v4futures=' + encodeURIComponent(JSON.stringify(this.db_v4futures)) +
-        //                 '&v4mini=' + encodeURIComponent(JSON.stringify(this.db_v4mini)) +
-        //                 '&v4micro=' + encodeURIComponent(JSON.stringify(this.db_v4micro));
-
-        // return jsonURL;
 
         // For post method..
         this.structData();
-        var userID = 32;
+        
         var jsonData = {
-            'userID' : 32,
+            'user_id' : 32,
             'Selection' : this.db_Selection,
-            'v4futures' : this.db_v4futures,
-            'v4mini' : this.db_v4mini,
-            'v4micro' : this.db_v4micro,
+            'boxstyles' : [],
+            'componentloc' : this.db_componentloc
         };
 
         return JSON.stringify(jsonData);
