@@ -369,7 +369,7 @@ export class NewBoardComponent {
     blankBoardAction(type) {
           switch(type) {
             case "reset": this.applyBlankBoardReset(); break; 
-            case "save": this.saveBlankBoard(); break;
+            case "save": this.saveBlankBoardNative(); break;
             default: break;
           }
      }
@@ -412,6 +412,35 @@ export class NewBoardComponent {
         });    
     }
 
+    //@TODO: Need to move this to the common service
+    getCookieByName(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+
+    //@TODO: Need to move this to the common service
+    saveBlankBoardNative() {
+        var params = this.db_JSON_Stringify();
+        var apiURL = this.baseURL + "/addrecord";
+
+        var data = new FormData();
+        data.append('user_id', JSON.stringify(params.user_id));
+        data.append('Selection', JSON.stringify(params.Selection));
+        data.append('boxstyles', JSON.stringify(params.boxstyles));
+        data.append('componentloc', JSON.stringify(params.componentloc));
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', apiURL, true);
+        xhr.setRequestHeader("X-CSRFToken", this.getCookieByName('csrftoken'));
+        xhr.onload = function () {
+            // do something to response
+            console.log(this.responseText);
+        };
+        xhr.send(data); 
+    }
+
     db_JSON_Stringify() {
 
         this.saveComponentLocations();
@@ -423,7 +452,7 @@ export class NewBoardComponent {
             'componentloc' : this.componentLoc
         };
 
-        return JSON.stringify(jsonData);
+        return jsonData;
     }
 
     saveComponentLocations() {

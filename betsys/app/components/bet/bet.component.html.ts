@@ -186,7 +186,7 @@ export const htmlTemplate = `
             [style.fontSize.px] = "buttonCells[2].tsize"
             [style.fontFamily] = "buttonCells[2].font"
             [style.fontWeight] = "buttonCells[2].tstyle"
-            (click)="onConfirmPOST()"
+            (click)="onConfirmPOSTNative()"
             >
               {{buttonCells[2].text}}
           </div>

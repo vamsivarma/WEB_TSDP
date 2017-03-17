@@ -1105,6 +1105,32 @@ export class BetComponent {
         });
     }
 
+    getCookieByName(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+    onConfirmPOSTNative() {
+        var params = this.db_JSON_Stringify();
+        var apiURL = this.baseURL + "/addrecord";
+
+        var data = new FormData();
+        data.append('user_id', JSON.stringify(params.user_id));
+        data.append('Selection', JSON.stringify(params.Selection));
+        data.append('boxstyles', JSON.stringify(params.boxstyles));
+        data.append('componentloc', JSON.stringify(params.componentloc));
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', apiURL, true);
+        xhr.setRequestHeader("X-CSRFToken", this.getCookieByName('csrftoken'));
+        xhr.onload = function () {
+            // do something to response
+            console.log(this.responseText);
+        };
+        xhr.send(data);
+    }
+
     db_JSON_Stringify() {
 
         // For post method..
@@ -1117,7 +1143,7 @@ export class BetComponent {
             'componentloc' : this.db_componentloc
         };
 
-        return JSON.stringify(jsonData);
+        return jsonData;
     }
 
     //Reset the order type label in the API params before invoking
