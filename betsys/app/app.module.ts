@@ -10,7 +10,7 @@ import { AppRouterModule }					from './app-router.module';
 import { HeaderComponent } 					from './components/header.component';
 import { BetComponent } 					  from './components/bet/bet.component';
 import { NewBoardComponent } 				from './components/bet/newboard.component';
-import { BetService } 							from './services/bet.service';
+import { BetService, BetXHRService } 							from './services/bet.service';
 
 import { ListToObjectTransform, ObjectToArrayTransform, 
          ReturnTextColorRelativeToBackground, ArrayShuffle } 				from './pipes/bet.pipes';
@@ -34,10 +34,11 @@ import { ListToObjectTransform, ObjectToArrayTransform,
           ReturnTextColorRelativeToBackground,
           ArrayShuffle
   		],
-  	providers: [ BetService, {
-            provide: XSRFStrategy,
-            useValue: new CookieXSRFStrategy('csrftoken', 'X-CSRFToken')
-          }],	
+  	providers: [ BetService, 
+                 BetXHRService, {
+                  provide: XSRFStrategy,
+                  useValue: new CookieXSRFStrategy('csrftoken', 'X-CSRFToken')
+              }],	
   	bootstrap: [ AppComponent ]
 })
 

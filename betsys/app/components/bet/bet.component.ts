@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './bet.component.html';
-
+import { BetService, BetXHRService }    from 'app/services/bet.service';
  
 @Component({
     // moduleId : module.id,
@@ -330,6 +330,8 @@ export class BetComponent {
     /*-------------------------------------------------------------------*/
     constructor(
         private router:Router,
+        private betService: BetService,
+        private betXHRService: BetXHRService,
         private http: Http
     ){
         for(var i = 0; i < this.cols.length; i++) {
@@ -1055,80 +1057,37 @@ export class BetComponent {
     boxStylesMeta = [];
 
     /*------------------------- For Database ---------------------------------*/
-    onConfirmGET() {
-        // Reset for chart dialog..
-        this.hideChartDialogues();
-
-        this.structData();
-
-        var boxStyles = [];
-
-
-        let header = new Headers({'Content-Type':'application/json'});
-        let options = new RequestOptions({headers:header});
-        var body =   this.baseURL + '/addrecord?user_id=' + 32 + 
-                '&Selection=' + encodeURIComponent(JSON.stringify(this.db_Selection)) +
-                '&boxstyles=' + encodeURIComponent(JSON.stringify(boxStyles)) +
-                '&componentloc=' + encodeURIComponent(JSON.stringify(this.db_componentloc));
-
-        console.log(body);
-        // this.confirmDialog("Save", 1);
-
-        return this.http.get(body).subscribe(response => {
-            this.test_value2 = JSON.stringify(response);
-            this.confirmBtnText = "Process Orders";
-            this.confirmDialog("Successfully saved!", 1);
-            console.log("[Bet.Componenet] Post Result Success : ", response);
-        }, error => {
-            this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
-            this.test_value2 = "Error Code : " + error;
-            console.log("[Bet.Componenet] Post Result Error : ", error);
-        });
-    }
-
-    onConfirmPOST() {
-        let header = new Headers({'Content-Type':'application/json'});
-        let options = new RequestOptions({headers:header});
-        var apiURL = this.baseURL + "/addrecord";
-        var body = this.db_JSON_Stringify();
-
-        console.log(document.cookie);
-
-        return this.http.post(apiURL, body, options).subscribe(response => {
-            this.test_value2 = JSON.stringify(response);
-            this.alarmDialog("Successfully saved!", "Process Orders");
-            console.log("[Bet.Componenet] Post Result Success : ", response);
-        }, error => {
-            this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
-            this.test_value2 = "Error Code : " + error;
-            console.log("[Bet.Componenet] Post Result Error : ", error);
-        });
-    }
-
-    getCookieByName(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
-    }
 
     onConfirmPOSTNative() {
-        var params = this.db_JSON_Stringify();
-        var apiURL = this.baseURL + "/addrecord";
 
-        var data = new FormData();
-        data.append('user_id', JSON.stringify(params.user_id));
-        data.append('Selection', JSON.stringify(params.Selection));
-        data.append('boxstyles', JSON.stringify(params.boxstyles));
-        data.append('componentloc', JSON.stringify(params.componentloc));
+      var _this = this;
+      var params = this.db_JSON_Stringify();
+      var apiURL = this.baseURL + "/addrecord";
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', apiURL, true);
-        xhr.setRequestHeader("X-CSRFToken", this.getCookieByName('csrftoken'));
-        xhr.onload = function () {
-            // do something to response
-            console.log(this.responseText);
-        };
-        xhr.send(data);
+      var data = new FormData();
+      data.append('user_id', JSON.stringify(params.user_id));
+      data.append('Selection', JSON.stringify(params.Selection));
+      data.append('boxstyles', JSON.stringify(params.boxstyles));
+      data.append('componentloc', JSON.stringify(params.componentloc));
+ 
+      this.betXHRService.postRequest (apiURL, data, 
+                              function (response) { // success callback
+                                _this.test_value2 = JSON.stringify(response);
+                                _this.alarmDialog("Successfully saved!", "Process Orders");
+                                console.log("[Bet.Componenet] Post Result Success : ", response); 
+                              }, function (xhr, status) { // error callback
+                                  switch(status) { 
+                                    case 404:  
+                                    case 500:  
+                                    case 0: 
+                                      _this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
+                                      _this.test_value2 = "Error Code : " + xhr;
+                                      console.log("[Bet.Componenet] Post Result Error : ", xhr);                               
+                                    break;
+                                    default: 
+                                      break; 
+                                  } 
+                              });
     }
 
     db_JSON_Stringify() {

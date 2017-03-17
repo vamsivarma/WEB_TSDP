@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './newboard.component.html';
-import { BetService } 	from 'app/services/bet.service';
+import { BetService, BetXHRService } 	from 'app/services/bet.service';
 
 import { ListToObjectTransform, ObjectToArrayTransform, 
          ReturnTextColorRelativeToBackground, ArrayShuffle }  from 'app/pipes/bet.pipes';
@@ -154,9 +154,12 @@ export class NewBoardComponent {
 
     	error: any;
 
+      @ViewChild('alarmModal') alarmModal:ModalComponent;
+
       constructor(
           private router:Router,
           private betService: BetService,
+          private betXHRService: BetXHRService,
           private http: Http
       ) {
         this.getRecords();
@@ -301,6 +304,8 @@ export class NewBoardComponent {
      }
 
      applySelectColorSave() {
+        var tobeDragEnabled = 0;
+
         for(var i = 0; i < this.componentsLen; i++) {
             var curComp = this.components[i];
 
@@ -310,13 +315,17 @@ export class NewBoardComponent {
                 if(curComp['bgColor'] !== "#FFFFFF") {
                   if(curComp['key'] !== "Off") {
                     curComp['sectionIndex'] = 1;
+                    tobeDragEnabled++;
                   } else {
                     this.componentOff['bgColor'] = this.componentsAssoc['Off']['bgColor'];
                     this.componentOff['textColor'] = this.componentsAssoc['Off']['textColor'];              
-                  }
-                      
+                  }      
                 } 
             }
+        }
+
+        if(!tobeDragEnabled) {
+          this.alarmDialog(this.pageMeta.colorSection.errorText, "OK");
         }    
      }
 
@@ -369,7 +378,7 @@ export class NewBoardComponent {
     blankBoardAction(type) {
           switch(type) {
             case "reset": this.applyBlankBoardReset(); break; 
-            case "save": this.saveBlankBoardNative(); break;
+            case "save": this.checkBoardSave(); break;
             default: break;
           }
      }
@@ -394,129 +403,154 @@ export class NewBoardComponent {
                   componentMeta['boardIndex'] =  '';
                   componentMeta['sectionIndex'] = 1;  
               }
-
             }
         }
      }
 
-     saveBlankBoard() {
-        let header = new Headers({'Content-Type':'application/json'});
-        let options = new RequestOptions({headers:header});
-        var apiURL = this.baseURL + "/addrecord";
-        var body = this.db_JSON_Stringify();
-
-        return this.http.post(apiURL, body, options).subscribe(response => {
-            console.log("Success....");
-        }, error => {
-            console.log("Error....");
-        });    
+    checkBoardSave() {
+      if(this.checkBoardContents()) {
+        this.saveBlankBoardNative();
+      } else {
+        this.alarmDialog(this.pageMeta.blankBoardSection.errorText, "OK");
+      }
     }
 
-    //@TODO: Need to move this to the common service
-    getCookieByName(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
-    }
+    checkBoardContents() {
 
-
-    //@TODO: Need to move this to the common service
-    saveBlankBoardNative() {
-        var params = this.db_JSON_Stringify();
-        var apiURL = this.baseURL + "/addrecord";
-
-        var data = new FormData();
-        data.append('user_id', JSON.stringify(params.user_id));
-        data.append('Selection', JSON.stringify(params.Selection));
-        data.append('boxstyles', JSON.stringify(params.boxstyles));
-        data.append('componentloc', JSON.stringify(params.componentloc));
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', apiURL, true);
-        xhr.setRequestHeader("X-CSRFToken", this.getCookieByName('csrftoken'));
-        xhr.onload = function () {
-            // do something to response
-            console.log(this.responseText);
-        };
-        xhr.send(data); 
-    }
-
-    db_JSON_Stringify() {
-
-        this.saveComponentLocations();
-        
-        var jsonData = {
-            'user_id' : 32,
-            'Selection' : this.db_Selection,
-            'boxstyles' : this.boxStyles,
-            'componentloc' : this.componentLoc
-        };
-
-        return jsonData;
-    }
-
-    saveComponentLocations() {
-
-      var componentLoc = [{
-                          "c0": "Off"
-                      }];
+      var filledCells = 0;
 
       for(var cellGrpKey in this.condCells) {
         var curCellGrp = this.condCells[cellGrpKey];
 
         var curCellLen = curCellGrp.length;
-        
+      
         for(var i=0; i < curCellLen; i++) {
           var curCell = curCellGrp[i];
 
-          var curIndex = curCell.condID;
-          componentLoc[curIndex] = {};
-
-          var curBoxStyleObj = this.boxStyles[curIndex]['c' + curIndex]
-
           if(curCell.orgText !== '') {
             //Cell on the board is not empty
-            componentLoc[curIndex]['c' + curIndex] = curCell.orgText;
-
-            curBoxStyleObj['text'] = this.componentShorthands[curCell.orgText];
-
-            curBoxStyleObj['fill-Hex'] = curCell.bgColor.substring(1); //Remove preceding #
-            
-            var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(curCell.bgColor);
-
-            curBoxStyleObj['fill-R'] = hexToRGBObj.r;
-            curBoxStyleObj['fill-G'] = hexToRGBObj.g;
-            curBoxStyleObj['fill-B'] = hexToRGBObj.b;
-            curBoxStyleObj['text-color'] = curCell.color;
-
+            filledCells++;
           } else {
-            //Cell is empty
-            componentLoc[curIndex]['c' + curIndex] = "None";
-            curBoxStyleObj = this.pageMeta.cNone;
+            //Cell is empty  
           }
-        }  
+        }
       }
 
-      this.applyOffComponentStyles();
+      return filledCells;
+   }   
 
-      this.componentLoc = componentLoc;
+
+  saveBlankBoardNative() {
+      var _this = this;
+      var params = this.db_JSON_Stringify();
+      var apiURL = this.baseURL + "/addrecord";
+
+      var data = new FormData();
+      data.append('user_id', JSON.stringify(params.user_id));
+      data.append('Selection', JSON.stringify(params.Selection));
+      data.append('boxstyles', JSON.stringify(params.boxstyles));
+      data.append('componentloc', JSON.stringify(params.componentloc));
+ 
+
+      this.betXHRService.postRequest (apiURL, data, 
+                              function (response) { // success callback
+                                _this.alarmDialog("Successfully saved!", "OK"); 
+                              }, function (xhr, status) { // error callback
+                                  switch(status) { 
+                                    case 404:  
+                                    case 500:  
+                                    case 0: 
+                                      _this.alarmDialog("Error! Could not save new board data.", "OK");                               
+                                    break;
+                                    default: 
+                                      break; 
+                                  } 
+                              });
+  }
+
+  db_JSON_Stringify() {
+
+      this.saveComponentLocations();
+      
+      var jsonData = {
+          'user_id' : 32,
+          'Selection' : this.db_Selection,
+          'boxstyles' : this.boxStyles,
+          'componentloc' : this.componentLoc
+      };
+
+      return jsonData;
+  }
+
+  saveComponentLocations() {
+
+    var componentLoc = [{
+                        "c0": "Off"
+                    }];
+
+    for(var cellGrpKey in this.condCells) {
+      var curCellGrp = this.condCells[cellGrpKey];
+
+      var curCellLen = curCellGrp.length;
+      
+      for(var i=0; i < curCellLen; i++) {
+        var curCell = curCellGrp[i];
+
+        var curIndex = curCell.condID;
+        componentLoc[curIndex] = {};
+
+        var curBoxStyleObj = this.boxStyles[curIndex]['c' + curIndex]
+
+        if(curCell.orgText !== '') {
+          //Cell on the board is not empty
+          componentLoc[curIndex]['c' + curIndex] = curCell.orgText;
+
+          curBoxStyleObj['text'] = this.componentShorthands[curCell.orgText];
+
+          curBoxStyleObj['fill-Hex'] = curCell.bgColor.substring(1); //Remove preceding #
+          
+          var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(curCell.bgColor);
+
+          curBoxStyleObj['fill-R'] = hexToRGBObj.r;
+          curBoxStyleObj['fill-G'] = hexToRGBObj.g;
+          curBoxStyleObj['fill-B'] = hexToRGBObj.b;
+          curBoxStyleObj['text-color'] = curCell.color;
+
+        } else {
+          //Cell is empty
+          componentLoc[curIndex]['c' + curIndex] = "None";
+          curBoxStyleObj = this.pageMeta.cNone;
+        }
+      }  
     }
 
-    applyOffComponentStyles() {
+    this.applyOffComponentStyles();
 
-      var offObj = this.boxStyles[0]['c0'];
-      var bgColor = this.componentOff['bgColor'];
+    this.componentLoc = componentLoc;
+  }
 
-      if(bgColor !== "#FFFFFF") {
-        var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(bgColor);
+  applyOffComponentStyles() {
 
-        offObj['fill-Hex'] = bgColor.substring(1); //Remove preceding #
+    var offObj = this.boxStyles[0]['c0'];
+    var bgColor = this.componentOff['bgColor'];
 
-        offObj['fill-R'] = hexToRGBObj.r;
-        offObj['fill-G'] = hexToRGBObj.g;
-        offObj['fill-B'] = hexToRGBObj.b;
-        offObj['text-color'] = this.componentOff.textColor;
-      }
+    if(bgColor !== "#FFFFFF") {
+      var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(bgColor);
+
+      offObj['fill-Hex'] = bgColor.substring(1); //Remove preceding #
+
+      offObj['fill-R'] = hexToRGBObj.r;
+      offObj['fill-G'] = hexToRGBObj.g;
+      offObj['fill-B'] = hexToRGBObj.b;
+      offObj['text-color'] = this.componentOff.textColor;
     }
+  }
+
+  /* Need to move this code to common service or component */
+  alarmDialog(alarmText, alarmButton) {
+      this.alarmText = alarmText;
+      this.alarmOKBtnText = alarmButton;
+      this.alarmModal.open();
+  }
 
 }
