@@ -196,7 +196,7 @@ def recreateCharts():
     time.sleep(15)
     pass
 
-def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=True):
+def get_blends(cloc, list_boxstyles=None, returnVotingComponents=True):
     def is_int(s):
         try:
             int(s)
@@ -204,19 +204,19 @@ def get_blends(cloc=None, list_boxstyles=None, returnVotingComponents=True):
         except ValueError:
             return False
 
-    if cloc == None:
-        firstrec=UserSelection.objects.order_by('-timestamp').first()
-        cloc = eval(firstrec.dic()['componentloc'])
+    #if cloc == None:
+    #    firstrec=UserSelection.objects.order_by('-timestamp').first()
+    #    cloc = eval(firstrec.dic()['componentloc'])
+    #    print cloc
 
     if list_boxstyles == None:
         filename='boxstyles_data.json'
         with open(filename, 'r') as f:
-            json_boxstyles = json.load(f)
+            list_boxstyles = json.load(f)
         #list_boxstyles = UserSelection.default_list_boxstyles
     #else:
     #    list_boxstyles = [d for d in list_boxstyles if not is_int(d.keys()[0])]
-
-    # print([cl.keys()[0] for cl in cloc])
+    #print([cl.keys()[0] for cl in cloc])
     component_styles = {bs.keys()[0]: bs.values()[0] for bs in list_boxstyles if
                         bs.keys()[0] in [cl.keys()[0] for cl in cloc]}
     component_names = {cl.keys()[0]: cl.values()[0] for cl in cloc}
