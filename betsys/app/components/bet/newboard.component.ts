@@ -83,11 +83,16 @@ export class NewBoardComponent {
 
     	pageMeta = {
         "cNone": {},
+        
         "pageSectionBackground": "",
+        
         "colorDefaults": ['#BE0032', '#222222', '#4FF773', '#FFFF00', '#A1CAF1', '#C2B280',
                           '#E68FAC', '#F99379', '#F38400', '#848482', '#008856', '#0067A5', '#604E97',
                           '#B3446C', '#654522', '#EA2819'],
-    		"colorSection": {
+
+        "loading_message": "Please wait 10-15 minutes for the charts to be recreated.",
+    		
+        "colorSection": {
                           "title": "Create New Custom Board:",
 
     		                  "subtitle": "Click on the component box to choose the colors for the components you want to use. Once you are done click the save button. If you do not want to choose custom colors, click Auto-Select and save.",
@@ -105,7 +110,8 @@ export class NewBoardComponent {
 
                           "errorText": ""
                         },
-          "dragDropSection": {
+          
+        "dragDropSection": {
                           "title": "Drag and drop components to blank boxes below. You may leave boxes blank.",
 
                           "subtitle": "",
@@ -187,6 +193,8 @@ export class NewBoardComponent {
       }
 
       assignPageMeta() {
+        this.pageMeta.cNone = this.customBoardStylesMeta['cNone'];
+        this.pageMeta.cNone['text'] = "None";
         this.pageMeta.colorSection.buttons[0]['label'] = this.customBoardStylesMeta['b_auto_select']['text'];
         this.pageMeta.colorSection.buttons[1]['label'] = this.customBoardStylesMeta['b_reset_colors']['text'];
         this.pageMeta.colorSection.buttons[2]['label'] = this.customBoardStylesMeta['b_save_colors']['text'];
@@ -200,10 +208,7 @@ export class NewBoardComponent {
 
         this.pageMeta.colorSection.subtitle = this.customBoardStylesMeta['text_choose_colors']['text'];
         this.pageMeta.dragDropSection.title = this.customBoardStylesMeta['text_place_components']['text'];
-
-        this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);       
-        this.pageMeta.cNone = this.customBoardStylesMeta['cNone'];
-
+        this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);
       }
 
       pushAutoSelectColors(colorsAry) {
@@ -211,7 +216,7 @@ export class NewBoardComponent {
         var colors = [];
         
         for(var i=0; i < colorsAry.length; i++) {
-            var curColor = "#" + colorsAry[i].fill-Hex;
+            var curColor = "#" + colorsAry[i]['fill-Hex'];
             colors.push(curColor);
         }
 
@@ -519,7 +524,7 @@ export class NewBoardComponent {
         } else {
           //Cell is empty
           componentLoc[curIndex]['c' + curIndex] = "None";
-          curBoxStyleObj = this.pageMeta.cNone;
+          this.copyObjectProps(curBoxStyleObj);
         }
       }  
     }
@@ -527,6 +532,14 @@ export class NewBoardComponent {
     this.applyOffComponentStyles();
 
     this.componentLoc = componentLoc;
+  }
+
+  copyObjectProps(boxStylesObj) {
+    for(var key in boxStylesObj) {
+      if(boxStylesObj.hasOwnProperty(key)) {
+        boxStylesObj[key] = this.pageMeta.cNone[key];
+      }
+    }
   }
 
   applyOffComponentStyles() {

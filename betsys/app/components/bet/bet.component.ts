@@ -60,6 +60,26 @@ export class BetComponent {
         {id:13,     webText:"RiskOff",             dictText:"RiskOff",             condRelative:1,         color:"#131313", },
     ];
 
+    componentShorthands = {
+        'Off' : 'Off',
+        'RiskOn': 'RON',
+        'RiskOff': 'ROFF',
+        'LowestEquity': 'LE',
+        'HighestEquity': 'HE',
+        'AntiHighestEquity': 'AHE',
+        'AntiLowestEquity': 'ALE',
+        'Anti50/50': 'A50',
+        'Seasonality': 'SEA',
+        'Anti-Seasonality': 'ASEA',
+        'Previous': 'PREV',
+        'Anti-Previous': 'AP',
+        'Custom': 'Custom',
+        'Anti-Custom': 'AC',
+        '50/50': '50/50'
+    };
+
+    shortToComponentAssoc = {};
+
     // Account data object..
     dragAccounts = [
         {   // Acount bet 50K..
@@ -308,9 +328,14 @@ export class BetComponent {
         chartData: {},
         styleIndex: 33,
         titleText: "Immediate Orders"
-    };    
+    };
 
 
+    loading_messages = {
+        "immediate": "Please wait up to five minutes for immediate orders to be processed.",
+        "normal": "Please wait up for the board to load.",
+        "new_board": "Please wait 10-15 minutes for the charts to be recreated."
+    };   
 
     chartStyle = [
         {id:0, relative:"text_performance", color:"#111111", size:"14", style:"bold", font:"Book antigua"},
@@ -354,6 +379,10 @@ export class BetComponent {
         this.getTimeTableInfo();
 
         this.getUnrealizedPNLDataInfo();
+
+        this.createCondCellsAssoc();
+
+        this.createShortToComponentAssoc();
 
         // // Testing..
         // this.parseBetInfo("");
@@ -1055,6 +1084,29 @@ export class BetComponent {
     db_v4micro = {};
     db_componentloc = {};
     boxStylesMeta = [];
+
+    condCellsAssoc = {
+        "None": -1
+    };
+
+    createCondCellsAssoc() {
+        var condCellsLen = this.componentDict.length;
+
+        for(var i=0; i < condCellsLen; i++) {
+            var curDict = this.componentDict[i];
+            this.condCellsAssoc[curDict.webText] = curDict.id;    
+        }
+    }
+
+    createShortToComponentAssoc() {
+        for(var key in this.componentShorthands) {
+            if(this.componentShorthands.hasOwnProperty(key)) {
+                var value = this.componentShorthands[key]; 
+                this.shortToComponentAssoc[value] = key;
+            }
+        }
+
+    }
 
     /*------------------------- For Database ---------------------------------*/
 
@@ -1918,6 +1970,11 @@ export class BetComponent {
                 this.condCells[idR][idK].font = style["text-font"];
                 this.condCells[idR][idK].tsize = style["text-size"];
                 this.condCells[idR][idK].tstyle = style["text-style"];
+                var compName = this.shortToComponentAssoc[style["text"]];
+                var condID = this.condCellsAssoc[compName];
+                condID = (condID !== undefined) ? condID : -1;
+                this.condCells[idR][idK].condID = condID;
+
                 console.log("[Bet.Component] condCells Cell, Style, Key : ", this.condCells[idx][ids], style, key, idc);
                 idc++;
             }
