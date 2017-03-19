@@ -186,7 +186,7 @@ export const htmlTemplate = `
             [style.fontSize.px] = "buttonCells[2].tsize"
             [style.fontFamily] = "buttonCells[2].font"
             [style.fontWeight] = "buttonCells[2].tstyle"
-            (click)="onConfirmGET()"
+            (click)="onConfirmPOSTNative()"
             >
               {{buttonCells[2].text}}
           </div>
@@ -452,6 +452,7 @@ export const htmlTemplate = `
                     [style.font-size.px] = "item.tsize"
                     [style.font-weight] = "item.tstyle"
                     [style.font-family] = "item.font"
+                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{item.text}}
                 </div>
@@ -545,6 +546,7 @@ export const htmlTemplate = `
                     [style.fontSize.px] = "item.tsize"
                     [style.fontWeight] = "item.tstyle"
                     [style.fontFamily] = "item.font"
+                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{item.text}}
               </div>
@@ -640,6 +642,7 @@ export const htmlTemplate = `
                     [style.fontSize.px] = "item.tsize"
                     [style.fontWeight] = "item.tstyle"
                     [style.fontFamily] = "item.font"
+                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{item.text}}
                 </div>
@@ -664,6 +667,7 @@ export const htmlTemplate = `
               dnd-droppable 
               (onDropSuccess)="onDropSuccess($event, 12, id)" 
               [dropZones]="[cellInfo(12, id, 4, 0)]"
+              [ngClass]="{'empty-risk-cell': item.condID === -1}"
               >
 
               <div #betAcount
@@ -738,6 +742,7 @@ export const htmlTemplate = `
                     [style.fontSize.px] = "item.tsize"
                     [style.fontWeight] = "item.tstyle"
                     [style.fontFamily] = "item.font"
+                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{condCells[0][id].text}}
                 </div>

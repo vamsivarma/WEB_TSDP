@@ -7,7 +7,7 @@ import { NewBoardComponent } 			from './components/bet/newboard.component';
 
 const appRoutes : Routes = [
 	{ path : '', 		 component : BetComponent},
-	{ path : 'bet', 	 component : BetComponent},
+	{ path : 'board', 	 component : BetComponent},
 	{ path : 'newboard', component : NewBoardComponent}
 ];
 

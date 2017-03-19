@@ -188,5 +188,17 @@ export const htmlTemplate = `
         </div>      
     </div>
   </div>
+  
+  <!--alarm dialog for notify-->
+  <modal #alarmModal data-toggle="modal" data-backdrop="static" data-keyboard="false">
+    <modal-body style="text-align:center;">
+      <div>
+        {{alarmText}}
+      </div>
+    </modal-body>
+    <modal-footer>
+      <span class="btn btn-default" (click)="alarmModal.close();">{{alarmOKBtnText}}</span>
+    </modal-footer>
+  </modal>
 </body>
 `;

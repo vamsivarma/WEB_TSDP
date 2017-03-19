@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './newboard.component.html';
-import { BetService } 	from 'app/services/bet.service';
+import { BetService, BetXHRService } 	from 'app/services/bet.service';
 
 import { ListToObjectTransform, ObjectToArrayTransform, 
          ReturnTextColorRelativeToBackground, ArrayShuffle }  from 'app/pipes/bet.pipes';
@@ -21,6 +21,13 @@ export class NewBoardComponent {
       componentsAssoc = {
       };
       componentLoc = [];
+
+
+      db_Selection = {
+        "v4micro" : ["Off", "False"],
+        "v4mini" : ["Off", "False"],
+        "v4futures" : ["Off", "False"]
+      };
 
       baseURL = "";
 
@@ -76,11 +83,16 @@ export class NewBoardComponent {
 
     	pageMeta = {
         "cNone": {},
+        
         "pageSectionBackground": "",
+        
         "colorDefaults": ['#BE0032', '#222222', '#4FF773', '#FFFF00', '#A1CAF1', '#C2B280',
                           '#E68FAC', '#F99379', '#F38400', '#848482', '#008856', '#0067A5', '#604E97',
                           '#B3446C', '#654522', '#EA2819'],
-    		"colorSection": {
+
+        "loading_message": "Please wait 10-15 minutes for the charts to be recreated.",
+    		
+        "colorSection": {
                           "title": "Create New Custom Board:",
 
     		                  "subtitle": "Click on the component box to choose the colors for the components you want to use. Once you are done click the save button. If you do not want to choose custom colors, click Auto-Select and save.",
@@ -98,7 +110,8 @@ export class NewBoardComponent {
 
                           "errorText": ""
                         },
-          "dragDropSection": {
+          
+        "dragDropSection": {
                           "title": "Drag and drop components to blank boxes below. You may leave boxes blank.",
 
                           "subtitle": "",
@@ -147,9 +160,12 @@ export class NewBoardComponent {
 
     	error: any;
 
+      @ViewChild('alarmModal') alarmModal:ModalComponent;
+
       constructor(
           private router:Router,
           private betService: BetService,
+          private betXHRService: BetXHRService,
           private http: Http
       ) {
         this.getRecords();
@@ -177,6 +193,8 @@ export class NewBoardComponent {
       }
 
       assignPageMeta() {
+        this.pageMeta.cNone = this.customBoardStylesMeta['cNone'];
+        this.pageMeta.cNone['text'] = "None";
         this.pageMeta.colorSection.buttons[0]['label'] = this.customBoardStylesMeta['b_auto_select']['text'];
         this.pageMeta.colorSection.buttons[1]['label'] = this.customBoardStylesMeta['b_reset_colors']['text'];
         this.pageMeta.colorSection.buttons[2]['label'] = this.customBoardStylesMeta['b_save_colors']['text'];
@@ -190,10 +208,7 @@ export class NewBoardComponent {
 
         this.pageMeta.colorSection.subtitle = this.customBoardStylesMeta['text_choose_colors']['text'];
         this.pageMeta.dragDropSection.title = this.customBoardStylesMeta['text_place_components']['text'];
-
-        this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);       
-        this.pageMeta.cNone = this.customBoardStylesMeta['cNone'];
-
+        this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);
       }
 
       pushAutoSelectColors(colorsAry) {
@@ -201,7 +216,7 @@ export class NewBoardComponent {
         var colors = [];
         
         for(var i=0; i < colorsAry.length; i++) {
-            var curColor = "#" + colorsAry[i].fill-Hex;
+            var curColor = "#" + colorsAry[i]['fill-Hex'];
             colors.push(curColor);
         }
 
@@ -294,6 +309,8 @@ export class NewBoardComponent {
      }
 
      applySelectColorSave() {
+        var tobeDragEnabled = 0;
+
         for(var i = 0; i < this.componentsLen; i++) {
             var curComp = this.components[i];
 
@@ -303,13 +320,17 @@ export class NewBoardComponent {
                 if(curComp['bgColor'] !== "#FFFFFF") {
                   if(curComp['key'] !== "Off") {
                     curComp['sectionIndex'] = 1;
+                    tobeDragEnabled++;
                   } else {
                     this.componentOff['bgColor'] = this.componentsAssoc['Off']['bgColor'];
                     this.componentOff['textColor'] = this.componentsAssoc['Off']['textColor'];              
-                  }
-                      
+                  }      
                 } 
             }
+        }
+
+        if(!tobeDragEnabled) {
+          this.alarmDialog(this.pageMeta.colorSection.errorText, "OK");
         }    
      }
 
@@ -362,7 +383,7 @@ export class NewBoardComponent {
     blankBoardAction(type) {
           switch(type) {
             case "reset": this.applyBlankBoardReset(); break; 
-            case "save": this.saveBlankBoard(); break;
+            case "save": this.checkBoardSave(); break;
             default: break;
           }
      }
@@ -387,103 +408,167 @@ export class NewBoardComponent {
                   componentMeta['boardIndex'] =  '';
                   componentMeta['sectionIndex'] = 1;  
               }
-
             }
         }
      }
 
-     saveBlankBoard() {
-
-        var db_Selection = {
-            "v4micro" : ["Off", "False"],
-            "v4mini" : ["Off", "False"],
-            "v4futures" : ["Off", "False"]
-        };
-
-        this.saveComponentLocations();
-
-        let header = new Headers({'Content-Type':'application/json'});
-        let options = new RequestOptions({headers:header});
-        var body =   this.baseURL + '/addrecord?user_id=' + 32 + 
-                '&Selection =' + encodeURIComponent(JSON.stringify(db_Selection)) +
-                '&boxstyles =' + encodeURIComponent(JSON.stringify(this.boxStyles)) +
-                '&componentloc=' + encodeURIComponent(JSON.stringify(this.componentLoc));
-
-        return this.http.get(body).subscribe(response => {
-            //this.test_value2 = JSON.stringify(response);
-            //this.confirmBtnText = "Process Orders";
-            //this.confirmDialog("Successfully saved!", 1);
-            console.log("Success....");
-        }, error => {
-            //this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
-            //this.test_value2 = "Error Code : " + error;
-            console.log("Error....");
-        });        
-  
+    checkBoardSave() {
+      if(this.checkBoardContents()) {
+        this.saveBlankBoardNative();
+      } else {
+        this.alarmDialog(this.pageMeta.blankBoardSection.errorText, "OK");
+      }
     }
 
-    saveComponentLocations() {
+    checkBoardContents() {
 
-      var componentLoc = [{
-                          "c0": "Off"
-                      }];
+      var filledCells = 0;
 
       for(var cellGrpKey in this.condCells) {
         var curCellGrp = this.condCells[cellGrpKey];
 
         var curCellLen = curCellGrp.length;
-        
+      
         for(var i=0; i < curCellLen; i++) {
           var curCell = curCellGrp[i];
 
-          var curIndex = curCell.condID;
-          componentLoc[curIndex] = {};
-
-          var curBoxStyleObj = this.boxStyles[curIndex]['c' + curIndex]
-
           if(curCell.orgText !== '') {
             //Cell on the board is not empty
-            componentLoc[curIndex]['c' + curIndex] = curCell.orgText;
-
-            curBoxStyleObj['text'] = this.componentShorthands[curCell.orgText];
-
-            curBoxStyleObj['fill-Hex'] = curCell.bgColor.substring(1); //Remove preceding #
-            
-            var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(curCell.bgColor);
-
-            curBoxStyleObj['fill-R'] = hexToRGBObj.r;
-            curBoxStyleObj['fill-G'] = hexToRGBObj.g;
-            curBoxStyleObj['fill-B'] = hexToRGBObj.b;
-            curBoxStyleObj['text-color'] = curCell.color;
-
+            filledCells++;
           } else {
-            //Cell is empty
-            componentLoc[curIndex]['c' + curIndex] = "None";
-            curBoxStyleObj = this.pageMeta.cNone;
+            //Cell is empty  
           }
-        }  
+        }
       }
 
-      this.applyOffComponentStyles();
+      return filledCells;
+   }   
 
-      this.componentLoc = componentLoc;
+
+  saveBlankBoardNative() {
+      var _this = this;
+      var params = this.db_JSON_Stringify();
+      var apiURL = this.baseURL + "/addrecord";
+
+      var data = new FormData();
+      data.append('user_id', JSON.stringify(params.user_id));
+      data.append('Selection', JSON.stringify(params.Selection));
+      data.append('boxstyles', JSON.stringify(params.boxstyles));
+      data.append('componentloc', JSON.stringify(params.componentloc));
+ 
+
+      this.betXHRService.postRequest (apiURL, data, 
+                              function (response) { // success callback
+                                //_this.alarmDialog("Successfully saved!", "OK");
+                                 
+                                // Redirecting to board page once the new board changes are saved successfully...
+                                // @TODO: Need to do this more efficiently
+                                _this.router.navigate(['/']); 
+
+                              }, function (xhr, status) { // error callback
+                                  switch(status) { 
+                                    case 404:  
+                                    case 500:  
+                                    case 0: 
+                                      _this.alarmDialog("Error! Could not save new board data.", "OK");                               
+                                    break;
+                                    default: 
+                                      break; 
+                                  } 
+                              });
+  }
+
+  db_JSON_Stringify() {
+
+      this.saveComponentLocations();
+      
+      var jsonData = {
+          'user_id' : 32,
+          'Selection' : this.db_Selection,
+          'boxstyles' : this.boxStyles,
+          'componentloc' : this.componentLoc
+      };
+
+      return jsonData;
+  }
+
+  saveComponentLocations() {
+
+    var componentLoc = [{
+                        "c0": "Off"
+                    }];
+
+    for(var cellGrpKey in this.condCells) {
+      var curCellGrp = this.condCells[cellGrpKey];
+
+      var curCellLen = curCellGrp.length;
+      
+      for(var i=0; i < curCellLen; i++) {
+        var curCell = curCellGrp[i];
+
+        var curIndex = curCell.condID;
+        componentLoc[curIndex] = {};
+
+        var curBoxStyleObj = this.boxStyles[curIndex]['c' + curIndex]
+
+        if(curCell.orgText !== '') {
+          //Cell on the board is not empty
+          componentLoc[curIndex]['c' + curIndex] = curCell.orgText;
+
+          curBoxStyleObj['text'] = this.componentShorthands[curCell.orgText];
+
+          curBoxStyleObj['fill-Hex'] = curCell.bgColor.substring(1); //Remove preceding #
+          
+          var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(curCell.bgColor);
+
+          curBoxStyleObj['fill-R'] = hexToRGBObj.r;
+          curBoxStyleObj['fill-G'] = hexToRGBObj.g;
+          curBoxStyleObj['fill-B'] = hexToRGBObj.b;
+          curBoxStyleObj['text-color'] = curCell.color;
+
+        } else {
+          //Cell is empty
+          componentLoc[curIndex]['c' + curIndex] = "None";
+          this.copyObjectProps(curBoxStyleObj);
+        }
+      }  
     }
 
-    applyOffComponentStyles() {
+    this.applyOffComponentStyles();
 
-      var offObj = this.boxStyles[0]['c0'];
-      var bgColor = this.componentOff['bgColor'];
+    this.componentLoc = componentLoc;
+  }
 
-      if(bgColor !== "#FFFFFF") {
-        var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(bgColor);
-
-        offObj['fill-Hex'] = bgColor.substring(1); //Remove preceding #
-
-        offObj['fill-R'] = hexToRGBObj.r;
-        offObj['fill-G'] = hexToRGBObj.g;
-        offObj['fill-B'] = hexToRGBObj.b;
-        offObj['text-color'] = this.componentOff.textColor;
+  copyObjectProps(boxStylesObj) {
+    for(var key in boxStylesObj) {
+      if(boxStylesObj.hasOwnProperty(key)) {
+        boxStylesObj[key] = this.pageMeta.cNone[key];
       }
     }
+  }
+
+  applyOffComponentStyles() {
+
+    var offObj = this.boxStyles[0]['c0'];
+    var bgColor = this.componentOff['bgColor'];
+
+    if(bgColor !== "#FFFFFF") {
+      var hexToRGBObj = this.returnTextColorRelativeToBackground.hexToRgb(bgColor);
+
+      offObj['fill-Hex'] = bgColor.substring(1); //Remove preceding #
+
+      offObj['fill-R'] = hexToRGBObj.r;
+      offObj['fill-G'] = hexToRGBObj.g;
+      offObj['fill-B'] = hexToRGBObj.b;
+      offObj['text-color'] = this.componentOff.textColor;
+    }
+  }
+
+  /* Need to move this code to common service or component */
+  alarmDialog(alarmText, alarmButton) {
+      this.alarmText = alarmText;
+      this.alarmOKBtnText = alarmButton;
+      this.alarmModal.open();
+  }
 
 }
