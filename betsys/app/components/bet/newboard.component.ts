@@ -459,7 +459,12 @@ export class NewBoardComponent {
 
       this.betXHRService.postRequest (apiURL, data, 
                               function (response) { // success callback
-                                _this.alarmDialog("Successfully saved!", "OK"); 
+                                //_this.alarmDialog("Successfully saved!", "OK");
+                                 
+                                // Redirecting to board page once the new board changes are saved successfully...
+                                // @TODO: Need to do this more efficiently
+                                _this.router.navigate(['/']); 
+
                               }, function (xhr, status) { // error callback
                                   switch(status) { 
                                     case 404:  

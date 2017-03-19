@@ -1125,7 +1125,7 @@ export class BetComponent {
       this.betXHRService.postRequest (apiURL, data, 
                               function (response) { // success callback
                                 _this.test_value2 = JSON.stringify(response);
-                                _this.alarmDialog("Successfully saved!", "Process Orders");
+                                _this.alarmDialog("Successfully saved!", "OK");
                                 console.log("[Bet.Componenet] Post Result Success : ", response); 
                               }, function (xhr, status) { // error callback
                                   switch(status) { 
