@@ -291,7 +291,7 @@ export const htmlTemplate = `
                 *ngFor="let item of col_items; let idRow=index;" 
                 dnd-droppable  
                 (onDropSuccess)="onDropSuccess($event, idCol, idRow)" 
-                [dropZones]="['drop-cell']"
+                [dropZones]="(tableCells[idCol * 3 + (2-idRow)].text !== '') ? ['drop-cell'] : ['']"
                 >
 
             <div #betAcount
@@ -354,6 +354,7 @@ export const htmlTemplate = `
             <div class="chart-button"
                 (click)="performanceChart(3, (idCol + 1) * 3 - idRow)"
                 [style.marginLeft.px] = "chartBTNMargins[0]"
+                 *ngIf="tableCells[idCol * 3 + (2-idRow)].text !== ''"
               >
               <img src="static/public/images/performance_button.png"
                   class="chart-button-img" alt="Performance Chart">
@@ -452,7 +453,6 @@ export const htmlTemplate = `
                     [style.font-size.px] = "item.tsize"
                     [style.font-weight] = "item.tstyle"
                     [style.font-family] = "item.font"
-                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{item.text}}
                 </div>
@@ -546,7 +546,6 @@ export const htmlTemplate = `
                     [style.fontSize.px] = "item.tsize"
                     [style.fontWeight] = "item.tstyle"
                     [style.fontFamily] = "item.font"
-                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{item.text}}
               </div>
@@ -642,7 +641,6 @@ export const htmlTemplate = `
                     [style.fontSize.px] = "item.tsize"
                     [style.fontWeight] = "item.tstyle"
                     [style.fontFamily] = "item.font"
-                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{item.text}}
                 </div>
@@ -742,7 +740,6 @@ export const htmlTemplate = `
                     [style.fontSize.px] = "item.tsize"
                     [style.fontWeight] = "item.tstyle"
                     [style.fontFamily] = "item.font"
-                    [ngClass]="{'empty-cell-caption': item.condID === -1}"
                     >
                   {{condCells[0][id].text}}
                 </div>

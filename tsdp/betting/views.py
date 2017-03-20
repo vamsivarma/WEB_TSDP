@@ -42,6 +42,15 @@ def addrecord(request):
                             #performance = json_performance,
                             mcdate=MCdate(), timestamp=getTimeStamp())
     record.save()
+    if list_boxstyles != []:
+        recreateCharts()
+
+    selections = UserSelection.objects.all().order_by('-timestamp')
+    # Please wait up to five minutes for immediate orders to be processed.
+    if 'True' in [order[1] for sys, order in eval(selections[0].selection).items()]:
+        print('Immediate Orders found')
+        checkImmediateOrders()
+
     return HttpResponse(json.dumps({"id": record.id}))
 
 
@@ -103,17 +112,9 @@ def getrecords(request):
 
 
 def board(request):
-    selections = UserSelection.objects.all().order_by('-timestamp')
 
-    # Please wait up to five minutes for immediate orders to be processed.
-    if 'True' in [order[1] for sys, order in eval(selections[0].selection).items()]:
-        print('Immediate Orders found')
-        checkImmediateOrders()
 
-    # Please wait 10-15 minutes for the charts to be recreated.
-    if selections[0].dic()['componentloc']!=selections[1].dic()['componentloc']:
-        print('New Board config found')
-        recreateCharts()
+
 
     updateMeta()
     getAccountValues()
@@ -127,23 +128,23 @@ def getmetadata(request):
     #returnrec = MetaData.objects.order_by('-timestamp').first()
     #returndata = returnrec.dic()
     returndata=updateMeta()
-    print(returndata)
+    #print(returndata)
     return HttpResponse(json.dumps(returndata))
 
 def getaccountdata(request):
     returnrec = AccountData.objects.order_by('-timestamp').first()
     returndata = returnrec.dic()
-    print(returndata)
+    #print(returndata)
     return HttpResponse(json.dumps(returndata))
 
 def gettimetable(request):
     returndata = get_timetables()
-    print(returndata)
+    #print(returndata)
     return HttpResponse(json.dumps(returndata))
 
 def getstatus(request):
     returndata = get_status()
-    print(returndata)
+    #print(returndata)
     return HttpResponse(json.dumps(returndata))
 
 def profile(request, username):
