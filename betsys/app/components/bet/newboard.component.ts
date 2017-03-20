@@ -330,7 +330,7 @@ export class NewBoardComponent {
         }
 
         if(!tobeDragEnabled) {
-          this.alarmDialog(this.pageMeta.colorSection.errorText, "OK");
+          this.alarmDialog(this.pageMeta.colorSection.errorText, "OK", "");
         }    
      }
 
@@ -416,7 +416,7 @@ export class NewBoardComponent {
       if(this.checkBoardContents()) {
         this.saveBlankBoardNative();
       } else {
-        this.alarmDialog(this.pageMeta.blankBoardSection.errorText, "OK");
+        this.alarmDialog(this.pageMeta.blankBoardSection.errorText, "OK", "");
       }
     }
 
@@ -459,18 +459,14 @@ export class NewBoardComponent {
 
       this.betXHRService.postRequest (apiURL, data, 
                               function (response) { // success callback
-                                //_this.alarmDialog("Successfully saved!", "OK");
-                                 
-                                // Redirecting to board page once the new board changes are saved successfully...
-                                // @TODO: Need to do this more efficiently
-                                _this.router.navigate(['/']); 
+                                _this.alarmDialog("Successfully saved!", "Stay on the page", "Move to board page");
 
                               }, function (xhr, status) { // error callback
                                   switch(status) { 
                                     case 404:  
                                     case 500:  
                                     case 0: 
-                                      _this.alarmDialog("Error! Could not save new board data.", "OK");                               
+                                      _this.alarmDialog("Error! Could not save new board data.", "OK", "");                               
                                     break;
                                     default: 
                                       break; 
@@ -564,10 +560,18 @@ export class NewBoardComponent {
     }
   }
 
+  redirectCallback() {
+    this.alarmModal.close();
+    // Redirecting to board page once the new board changes are saved successfully...
+    // @TODO: Need to do this more efficiently
+    this.router.navigate(['/']);
+  }
+
   /* Need to move this code to common service or component */
-  alarmDialog(alarmText, alarmButton) {
+  alarmDialog(alarmText, alarmButton, redirectButton) {
       this.alarmText = alarmText;
       this.alarmOKBtnText = alarmButton;
+      this.alarmRedirectBtnText = redirectButton;
       this.alarmModal.open();
   }
 
