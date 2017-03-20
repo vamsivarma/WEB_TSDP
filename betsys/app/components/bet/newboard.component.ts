@@ -310,21 +310,25 @@ export class NewBoardComponent {
      applySelectColorSave() {
         var tobeDragEnabled = 0;
 
-        for(var i = 0; i < this.componentsLen; i++) {
-            var curComp = this.components[i];
+        //Move any components to draggable section only if Off component is coloured
+        //If Off is already coloured and user clicks on reset on the color section, then Off need not be colored again to move components to drag section
+        if(this.componentsAssoc['Off']['bgColor'] !== "#FFFFFF" || this.componentOff['bgColor'] !== "#FFFFFF") {
+            for(var i = 0; i < this.componentsLen; i++) {
+              var curComp = this.components[i];
 
-            //Make the components draggable if their background color is changed(i.e.., not the default #FFFFFF)
-            //Since Off is not a draggable component, dont allow it to be moved to draggable section
-            if(curComp['sectionIndex'] === 0) {
-                if(curComp['bgColor'] !== "#FFFFFF") {
-                  if(curComp['key'] !== "Off") {
-                    curComp['sectionIndex'] = 1;
-                    tobeDragEnabled++;
-                  } else {
-                    this.componentOff['bgColor'] = this.componentsAssoc['Off']['bgColor'];
-                    this.componentOff['textColor'] = this.componentsAssoc['Off']['textColor'];              
-                  }      
-                } 
+              //Make the components draggable if their background color is changed(i.e.., not the default #FFFFFF)
+              //Since Off is not a draggable component, dont allow it to be moved to draggable section
+              if(curComp['sectionIndex'] === 0) {
+                  if(curComp['bgColor'] !== "#FFFFFF") {
+                    if(curComp['key'] !== "Off") {
+                      curComp['sectionIndex'] = 1;
+                      tobeDragEnabled++;
+                    } else {
+                      this.componentOff['bgColor'] = curComp['bgColor'];
+                      this.componentOff['textColor'] = curComp['textColor'];              
+                    }      
+                  } 
+              }
             }
         }
 

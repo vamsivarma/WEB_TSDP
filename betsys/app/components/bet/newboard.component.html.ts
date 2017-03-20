@@ -198,7 +198,9 @@ export const htmlTemplate = `
     </modal-body>
     <modal-footer>
       <span class="btn btn-default" (click)="alarmModal.close();">{{alarmOKBtnText}}</span>
-      <span class="btn btn-default" (click)="redirectCallback();">{{alarmRedirectBtnText}}</span>
+      <span class="btn btn-default"
+            *ngIf="alarmRedirectBtnText !== ''" 
+            (click)="redirectCallback();">{{alarmRedirectBtnText}}</span>
     </modal-footer>
   </modal>
 </body>
