@@ -812,11 +812,6 @@ table {
 	font-weight: bold;
 }
 
-.pane-cell-caption .empty-cell-caption, 
-.risk-cell-caption .empty-cell-caption {
-	color: #000000;
-}
-
 .bet-risk .empty-risk-cell {
 	border-right: 1px solid #000;
 }

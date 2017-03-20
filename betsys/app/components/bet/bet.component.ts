@@ -5,6 +5,7 @@ import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './bet.component.html';
 import { BetService, BetXHRService }    from 'app/services/bet.service';
+import { ReturnTextColorRelativeToBackground }  from 'app/pipes/bet.pipes';
  
 @Component({
     // moduleId : module.id,
@@ -79,6 +80,8 @@ export class BetComponent {
     };
 
     shortToComponentAssoc = {};
+
+    returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground();
 
     // Account data object..
     dragAccounts = [
@@ -1963,14 +1966,18 @@ export class BetComponent {
                     idK = Math.floor((idK + 1) / 2) + 1;
                 }
                 var style = boxStyles[idc][key];
+                var textcolor = this.returnTextColorRelativeToBackground.transform("#" + style["fill-Hex"]);
+                var compText = (style["text"] !== '') ? style["text"] : "None";
+                
                 console.log("[Bet.Component] R, C : ", idR, idK);
+                
                 this.condCells[idR][idK].bgColor = "#" + style["fill-Hex"];
                 this.condCells[idR][idK].text = style["text"];
-                this.condCells[idR][idK].color = "#" + style["text-color"];
+                this.condCells[idR][idK].color = textcolor;
                 this.condCells[idR][idK].font = style["text-font"];
                 this.condCells[idR][idK].tsize = style["text-size"];
                 this.condCells[idR][idK].tstyle = style["text-style"];
-                var compName = this.shortToComponentAssoc[style["text"]];
+                var compName = this.shortToComponentAssoc[compText];
                 var condID = this.condCellsAssoc[compName];
                 condID = (condID !== undefined) ? condID : -1;
                 this.condCells[idR][idK].condID = condID;

@@ -260,7 +260,7 @@ def get_blends(cloc, list_boxstyles=None, returnVotingComponents=True):
         boxidDict[str(boxid)] += ['c' + str(o_component)]
         boxidDict[str(boxid)] += vboxdict[boxid % table_height]
 
-    boxstyleDict = {boxid: [component_styles[x] for x in boxidDict[boxid] if component_names[x] is not 'None'] for
+    boxstyleDict = {boxid: [component_styles[x] for x in boxidDict[boxid] if component_names[x] != 'None'] for
                     boxid
                     in boxidDict}
 
