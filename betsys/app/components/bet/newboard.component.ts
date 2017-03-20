@@ -194,7 +194,6 @@ export class NewBoardComponent {
 
       assignPageMeta() {
         this.pageMeta.cNone = this.customBoardStylesMeta['cNone'];
-        this.pageMeta.cNone['text'] = "None";
         this.pageMeta.colorSection.buttons[0]['label'] = this.customBoardStylesMeta['b_auto_select']['text'];
         this.pageMeta.colorSection.buttons[1]['label'] = this.customBoardStylesMeta['b_reset_colors']['text'];
         this.pageMeta.colorSection.buttons[2]['label'] = this.customBoardStylesMeta['b_save_colors']['text'];
