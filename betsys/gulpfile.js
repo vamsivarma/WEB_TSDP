@@ -78,7 +78,10 @@ gulp.task('minify:js', function() {
 gulp.task('minify:css', function() {
   // concat and minify application speific css files
   return gulp
-    .src('app/**/*.css')
+    .src([
+      'node_modules/angular2-busy/build/style/busy.css',
+      'app/**/*.css'
+    ])
     .pipe(concat('app.min.css'))
     .pipe(cleanCSS())
     .pipe(gulp.dest('dist/css'));
@@ -103,7 +106,7 @@ gulp.task('copy:libs', function() {
     'node_modules/systemjs/dist/system.src.js',
     'node_modules/jquery/dist/jquery.min.js',
     'node_modules/bootstrap/dist/js/bootstrap.min.js',
-    'systemjs.config.js',
+    'systemjs.config.js'
   ])
     .pipe(concat('libs.min.js'))
     .pipe(uglify())

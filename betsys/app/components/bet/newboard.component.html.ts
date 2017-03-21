@@ -4,6 +4,8 @@ export const htmlTemplate = `
 
   <!--Body of page-->
   <div class="container newboard-container">
+     <div [ngBusy]="{busy: [busyA, busyB], message: 'Loading New board page...'}"></div>
+     <div [ngBusy]="{busy: busyC, message: 'Saving new board...'}"></div>
     
     <!-- Select Color Section -->
     <div class="bet-info-pane color-section-holder section-holder-common" >

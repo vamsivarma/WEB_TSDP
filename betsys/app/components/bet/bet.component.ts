@@ -1,7 +1,7 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { NgStyle } from '@angular/common'
 import { Router } from '@angular/router';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './bet.component.html';
 import { BetService, BetXHRService }    from 'app/services/bet.service';
@@ -13,7 +13,7 @@ import { ReturnTextColorRelativeToBackground }  from 'app/pipes/bet.pipes';
     template : htmlTemplate
 })
 
-export class BetComponent {
+export class BetComponent implements OnInit {
     /*-------------------------------------------------------------------*/
     /*---------------------------- Variables ----------------------------*/
     /*-------------------------------------------------------------------*/
@@ -21,6 +21,14 @@ export class BetComponent {
     // For database and server URLs..
     // baseURL = "http://localhost:8000";
     baseURL = "";
+
+    busyA: Promise<any>;
+    busyB: Promise<any>;
+    busyC: Promise<any>;
+    busyD: Promise<any>;
+    busyE: Promise<any>;
+
+    busyF: Promise<any>;
 
     // DOM of interface..
     @ViewChild('leftPane') leftPane:ElementRef;
@@ -352,7 +360,6 @@ export class BetComponent {
     components = {};
     anticomponents = {};
 
-
     /*-------------------------------------------------------------------*/
     /*---------------------------- Functions ----------------------------*/
     /*-------------------------------------------------------------------*/
@@ -391,6 +398,15 @@ export class BetComponent {
         // this.parseBetInfo("");
         // this.setTriggerData("");
         // this.parseAccountData("");
+    }
+
+    ngOnInit() {
+
+        this.busyA = this.http.get('/getrecords').toPromise();
+        this.busyB = this.http.get('/getmetadata').toPromise();
+        this.busyC = this.http.get('/getaccountdata').toPromise();
+        this.busyD = this.http.get('/gettimetable').toPromise();
+        this.busyE = this.http.get('/getstatus').toPromise();
     }
 
     // Set size of left pane and account image..
@@ -1124,25 +1140,26 @@ export class BetComponent {
       data.append('Selection', JSON.stringify(params.Selection));
       data.append('boxstyles', JSON.stringify(params.boxstyles));
       data.append('componentloc', JSON.stringify(params.componentloc));
- 
-      this.betXHRService.postRequest (apiURL, data, 
-                              function (response) { // success callback
-                                _this.test_value2 = JSON.stringify(response);
-                                _this.alarmDialog("Successfully saved!", "OK");
-                                console.log("[Bet.Componenet] Post Result Success : ", response); 
-                              }, function (xhr, status) { // error callback
-                                  switch(status) { 
-                                    case 404:  
-                                    case 500:  
-                                    case 0: 
-                                      _this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
-                                      _this.test_value2 = "Error Code : " + xhr;
-                                      console.log("[Bet.Componenet] Post Result Error : ", xhr);                               
-                                    break;
-                                    default: 
-                                      break; 
-                                  } 
-                              });
+
+      this.busyF = this.betXHRService.postRequest(apiURL, data)
+                    .then(function(response) {
+                        _this.test_value2 = JSON.stringify(response);
+                        _this.alarmDialog("Successfully saved!", "OK");
+                        console.log("[Bet.Componenet] Post Result Success : ", response);
+                    })
+                    .catch(function(err) {
+                        switch(err.status) { 
+                              case 404:  
+                              case 500:  
+                              case 0: 
+                                  _this.alarmDialog("Error on confirm! Can't save it to the database!", "OK");
+                                  _this.test_value2 = "Error Code : " + err.statusText;
+                                  console.log("[Bet.Componenet] Post Result Error : ", err.statusText);                               
+                                break;
+                              default: 
+                                break; 
+                        }
+                    });                       
     }
 
     db_JSON_Stringify() {

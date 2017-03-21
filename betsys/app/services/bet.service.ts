@@ -49,27 +49,35 @@ export class BetXHRService {
         if (parts.length == 2) return parts.pop().split(";").shift();
   }
 
-  postRequest(url, params, success, error) {  
-    var xhr = XMLHttpRequest ? new XMLHttpRequest() : 
-                               new ActiveXObject("Microsoft.XMLHTTP"); 
-                           
-    xhr.open("POST", url, true); 
-    xhr.setRequestHeader("X-CSRFToken", this.getCookieByName('csrftoken'));
-  
-    xhr.onreadystatechange = function(){ 
-      if ( xhr.readyState == 4 ) { 
-        if ( xhr.status == 200 ) { 
-          success(xhr.responseText); 
-        } else { 
-          error(xhr, xhr.status); 
-        } 
-      } 
-    };
+  postRequest(url, params) {
+    var _this = this;
 
-    xhr.onerror = function () { 
-      error(xhr, xhr.status); 
-    };
+    return new Promise(function (resolve, reject) {  
+        var xhr = XMLHttpRequest ? new XMLHttpRequest() : 
+                                   new ActiveXObject("Microsoft.XMLHTTP"); 
+                               
+        xhr.open("POST", url, true); 
+        xhr.setRequestHeader("X-CSRFToken", _this.getCookieByName('csrftoken'));
 
-    xhr.send(params); 
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+
+        xhr.send(params);
+    }); 
   }
 }

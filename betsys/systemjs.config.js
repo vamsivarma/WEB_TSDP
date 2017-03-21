@@ -12,7 +12,7 @@
     defaltJSExtensions : true,
     map: {
       // our app is within the app folder
-      app: 'app',
+      app: 'app/app',
       // angular bundles
       '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
       '@angular/common': 'npm:@angular/common/bundles/common.umd.js',
@@ -29,7 +29,10 @@
       'moment' : 'node_modules/moment/moment.js',
       'ng2-bootstrap/ng2-bootstrap' : 'node_modules/ng2-bootstrap/bundles/ng2-bootstrap.umd.js',
       'ng2-dnd' : 'node_modules/ng2-dnd/bundles',
-      'ng2-bs3-modal': 'node_modules/ng2-bs3-modal'
+      'ng2-bs3-modal': 'node_modules/ng2-bs3-modal',
+      'ts-metadata-helper': 'npm:ts-metadata-helper',
+      'angular2-dynamic-component': 'npm:angular2-dynamic-component',
+      'angular2-busy': 'npm:angular2-busy'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -47,6 +50,16 @@
       'ng2-bs3-modal' : {
         main:'./ng2-bs3-modal.js',
         defaultExtension : 'js'
+      },
+      'ts-metadata-helper': {
+        defaultExtension: 'js'
+      },
+      'angular2-dynamic-component': {
+        defaultExtension: 'js'
+      },
+      'angular2-busy': {
+        main: './index.js',
+        defaultExtension: 'js'
       }
     }
   });

@@ -5,6 +5,8 @@ export const htmlTemplate = `
 
   <!--Body of page-->
   <div class="container">
+    <div [ngBusy]="{busy: [busyA, busyB, busyC, busyD, busyE], message: 'Loading board page...'}"></div>
+    <div [ngBusy]="{busy: busyF, message: 'Saving Changes...'}"></div>
 
     <!--information pane-->
     <div class="bet-info-pane">
