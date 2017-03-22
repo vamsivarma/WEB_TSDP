@@ -85,6 +85,11 @@ export class NewBoardComponent implements OnInit {
       returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground(); 
       arrayShuffle = new ArrayShuffle();
 
+      config1 = {
+        'busy': '',
+        'message': ''
+      };
+
     	pageMeta = {
         "cNone": {},
         
@@ -95,6 +100,8 @@ export class NewBoardComponent implements OnInit {
                           '#B3446C', '#654522', '#EA2819'],
 
         "loading_message": "Please wait 10-15 minutes for the charts to be recreated.",
+
+        "loadingMessages": [],
     		
         "colorSection": {
                           "title": "Create New Custom Board:",
@@ -217,6 +224,7 @@ export class NewBoardComponent implements OnInit {
         this.pageMeta.colorSection.subtitle = this.customBoardStylesMeta['text_choose_colors']['text'];
         this.pageMeta.dragDropSection.title = this.customBoardStylesMeta['text_place_components']['text'];
         this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);
+        this.pageMeta.loadingMessages = this.customBoardStylesMeta['list_loadingscreens'];
       }
 
       pushAutoSelectColors(colorsAry) {
@@ -483,6 +491,12 @@ export class NewBoardComponent implements OnInit {
                                     break; 
                             }
                         });
+
+      this.config1 = {
+        'busy': this.busyC,
+        'message': this.pageMeta.loadingMessages[0].newboard
+      };                  
+
   }
 
   db_JSON_Stringify() {

@@ -6,6 +6,8 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './bet.component.html';
 import { BetService, BetXHRService }    from 'app/services/bet.service';
 import { ReturnTextColorRelativeToBackground }  from 'app/pipes/bet.pipes';
+import { ListToObjectTransform, 
+         ReturnTextColorRelativeToBackground }  from 'app/pipes/bet.pipes';
  
 @Component({
     // moduleId : module.id,
@@ -88,6 +90,9 @@ export class BetComponent implements OnInit {
     };
 
     shortToComponentAssoc = {};
+
+    customBoardStylesMeta = {};
+    loadingMessages = [];
 
     returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground();
 
@@ -285,6 +290,16 @@ export class BetComponent implements OnInit {
     isChartBox3 = false;
     isChartBox4 = false;
 
+    config1 = {
+        'busy': '',
+        'message': ''
+    };
+
+    config2 = {
+        'busy': '',
+        'message': ''
+    };
+
     chartInfo1 = [{
         id:1, top: 300, left: 340, marginLeft: 0,
         chipText:"50K", chipImg:"chip_maroon.png",
@@ -360,6 +375,8 @@ export class BetComponent implements OnInit {
     components = {};
     anticomponents = {};
 
+    listToObjectPipe = new ListToObjectTransform();
+
     /*-------------------------------------------------------------------*/
     /*---------------------------- Functions ----------------------------*/
     /*-------------------------------------------------------------------*/
@@ -407,6 +424,11 @@ export class BetComponent implements OnInit {
         this.busyC = this.http.get('/getaccountdata').toPromise();
         this.busyD = this.http.get('/gettimetable').toPromise();
         this.busyE = this.http.get('/getstatus').toPromise();
+
+        this.config1 = {
+            'message': 'Loading board data...',
+            'busy': [this.busyA, this.busyB, this.busyC, this.busyD, this.busyC]
+        };
     }
 
     // Set size of left pane and account image..
@@ -1159,7 +1181,11 @@ export class BetComponent implements OnInit {
                               default: 
                                 break; 
                         }
-                    });                       
+                    });
+      this.config2 = {
+        'message': this.loadingMessages[1].immediate,
+        'busy': this.busyF
+      };                                    
     }
 
     db_JSON_Stringify() {
@@ -1521,6 +1547,11 @@ export class BetComponent implements OnInit {
         // For previous data loading..
         var previous = jsData['first'];
         var mcdate = previous['mcdate'] || "Off";
+
+        this.customBoardStylesMeta = this.listToObjectPipe.transform(previous.customstyles);
+        this.loadingMessages = this.customBoardStylesMeta['list_loadingscreens'];
+
+        this.config1.message = this.loadingMessages[2]['else'];
 
         var item : any;
         var Selection = JSON.parse(previous['selection']);

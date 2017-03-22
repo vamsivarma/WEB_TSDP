@@ -151,7 +151,10 @@ def profile(request, username):
     user = User.objects.get(username=username)
     return render(request, 'profile.html', {'username': username})
 
-
+def getcustomboarddata(request):
+    returndata =UserSelection.json_customstyles
+    return returndata
+    
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
