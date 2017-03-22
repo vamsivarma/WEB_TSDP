@@ -3,6 +3,7 @@ import { BrowserModule } 						from '@angular/platform-browser';
 import { HttpModule, XSRFStrategy, CookieXSRFStrategy, Http}          from '@angular/http';
 import { FormsModule }							from '@angular/forms';
 import { DndModule } 							  from 'ng2-dnd';
+import { BusyModule, BusyConfig }                from 'angular2-busy';
 import { Ng2Bs3ModalModule } 				from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { AppComponent }   					from './components/app.component';
@@ -23,6 +24,21 @@ import { ListToObjectTransform, ObjectToArrayTransform,
         	HttpModule,
 					DndModule.forRoot(),
 					Ng2Bs3ModalModule,
+          BusyModule.forRoot(
+            new BusyConfig({
+                message: 'Loading... Please wait',
+                template: `
+                        <div class="loader-overlay-holder"> 
+                          <div class="loader-message">{{message}}</div> 
+                          <div class= "loader-overlay"> 
+                              <div class="loader"></div> 
+                          </div>  
+                        </div>
+                      `,
+                minDuration: 300,
+                wrapperClass: 'bet-loading-overlay'
+            })
+          )
 		],
   	declarations: [
 	  			AppComponent,

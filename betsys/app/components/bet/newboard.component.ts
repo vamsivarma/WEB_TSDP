@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgStyle } from '@angular/common'
 import { Router } from '@angular/router';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { htmlTemplate } from './newboard.component.html';
 import { BetService, BetXHRService } 	from 'app/services/bet.service';
@@ -14,7 +14,7 @@ import { ListToObjectTransform, ObjectToArrayTransform,
     template : htmlTemplate
 })
 
-export class NewBoardComponent {
+export class NewBoardComponent implements OnInit {
 	
     	components = [];
       componentsLen = 0;
@@ -30,6 +30,10 @@ export class NewBoardComponent {
       };
 
       baseURL = "";
+      
+      busyA: Promise<any>;
+      busyB: Promise<any>;
+      busyC: Promise<any>; 
 
       componentOff = {
         'bgColor': '#FFFFFF',
@@ -170,6 +174,11 @@ export class NewBoardComponent {
       ) {
         this.getRecords();
       	this.getComponentsList();
+      }
+
+      ngOnInit() {
+        this.busyA = this.http.get('/getrecords').toPromise();
+        this.busyB = this.http.get('/getmetadata').toPromise();
       }
 
 
@@ -459,22 +468,21 @@ export class NewBoardComponent {
       data.append('boxstyles', JSON.stringify(params.boxstyles));
       data.append('componentloc', JSON.stringify(params.componentloc));
  
-
-      this.betXHRService.postRequest (apiURL, data, 
-                              function (response) { // success callback
-                                _this.alarmDialog("Successfully saved!", "Stay on the page", "Move to board page");
-
-                              }, function (xhr, status) { // error callback
-                                  switch(status) { 
-                                    case 404:  
-                                    case 500:  
-                                    case 0: 
-                                      _this.alarmDialog("Error! Could not save new board data.", "OK", "");                               
+      this.busyC = this.betXHRService.postRequest(apiURL, data)
+                        .then(function(response) {
+                            _this.alarmDialog("Successfully saved!", "Stay on the page", "Move to board page");
+                        })
+                        .catch(function(err) {
+                            switch(err.status) { 
+                                  case 404:  
+                                  case 500:  
+                                  case 0: 
+                                      _this.alarmDialog("Error! Could not save new board data.", "OK","");                               
                                     break;
-                                    default: 
-                                      break; 
-                                  } 
-                              });
+                                  default: 
+                                    break; 
+                            }
+                        });
   }
 
   db_JSON_Stringify() {
