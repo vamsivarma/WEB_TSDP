@@ -1172,7 +1172,7 @@ export class BetComponent implements OnInit {
       this.busyF = this.betXHRService.postRequest(apiURL, data)
                     .then(function(response) {
                         _this.test_value2 = JSON.stringify(response);
-                        _this.alarmDialog("Successfully saved!", "OK");
+                        _this.alarmDialog("Successfully saved and processed orders.", "OK");
                         console.log("[Bet.Componenet] Post Result Success : ", response);
                     })
                     .catch(function(err) {

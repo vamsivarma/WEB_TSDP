@@ -78,10 +78,10 @@ export class ReturnTextColorRelativeToBackground implements PipeTransform {
   transform(value, args:string) : any {
     
     var rgbObj = this.hexToRgb(value);
-   	var contrastValue = rgbObj.r * 0.299 + rgbObj.g * 0.587 + rgbObj.b * 0.114;
+   	var contrastValue = rgbObj.r * 0.2126 + rgbObj.g * 0.7152 + rgbObj.b * 0.0722;
    	var textColor = "#FFFFFF";
 
-	if (contrastValue > 186) {
+	if (contrastValue > 179) {
 		textColor = "#000000";
 	}
 	
