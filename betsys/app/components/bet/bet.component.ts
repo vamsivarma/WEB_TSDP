@@ -92,7 +92,13 @@ export class BetComponent implements OnInit {
     shortToComponentAssoc = {};
 
     customBoardStylesMeta = {};
-    loadingMessages = [];
+    loadingMessages = [{
+        'newboard': 'Please wait 10-15 minutes for the charts to be recreated.'    
+    }, {
+        'immediate': 'Please wait up to five minutes for immediate orders to be processed.'    
+    }, {
+        'else': 'Please wait up for the board to load.'    
+    }];
 
     returnTextColorRelativeToBackground = new ReturnTextColorRelativeToBackground();
 
@@ -1549,7 +1555,10 @@ export class BetComponent implements OnInit {
         var mcdate = previous['mcdate'] || "Off";
 
         this.customBoardStylesMeta = this.listToObjectPipe.transform(previous.customstyles);
-        this.loadingMessages = this.customBoardStylesMeta['list_loadingscreens'];
+
+        if(this.customBoardStylesMeta['list_loadingscreens']) {
+            this.loadingMessages = this.customBoardStylesMeta['list_loadingscreens'];
+        }
 
         this.config1.message = this.loadingMessages[2]['else'];
 

@@ -101,7 +101,13 @@ export class NewBoardComponent implements OnInit {
 
         "loading_message": "Please wait 10-15 minutes for the charts to be recreated.",
 
-        "loadingMessages": [],
+        "loadingMessages": [{
+                      'newboard': 'Please wait 10-15 minutes for the charts to be recreated.'    
+                  }, {
+                      'immediate': 'Please wait up to five minutes for immediate orders to be processed.'    
+                  }, {
+                      'else': 'Please wait up for the board to load.'    
+                  }],
     		
         "colorSection": {
                           "title": "Create New Custom Board:",
@@ -224,7 +230,11 @@ export class NewBoardComponent implements OnInit {
         this.pageMeta.colorSection.subtitle = this.customBoardStylesMeta['text_choose_colors']['text'];
         this.pageMeta.dragDropSection.title = this.customBoardStylesMeta['text_place_components']['text'];
         this.pageMeta.colorDefaults = this.pushAutoSelectColors(this.customBoardStylesMeta['list_autoselect']);
-        this.pageMeta.loadingMessages = this.customBoardStylesMeta['list_loadingscreens'];
+        
+        if(this.customBoardStylesMeta['list_loadingscreens']) {
+          this.pageMeta.loadingMessages = this.customBoardStylesMeta['list_loadingscreens'];
+        }
+        
       }
 
       pushAutoSelectColors(colorsAry) {
